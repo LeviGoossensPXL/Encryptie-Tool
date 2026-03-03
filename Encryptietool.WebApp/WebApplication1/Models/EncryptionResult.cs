@@ -2,5 +2,7 @@
 {
     public class EncryptionResult
     {
+        private string ciphertext;
+        private string metadata;
     }
 }
