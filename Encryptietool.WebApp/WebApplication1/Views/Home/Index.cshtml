@@ -1,8 +1,12 @@
-﻿@{
+﻿@model EncryptionViewModel;
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>input text: <code>@Model.InputText</code> </p>
+    <p>cipher text: <code>@Model.CipherText</code> </p>
+    <p>output text: <code>@Model.OutputText</code> </p>
 </div>
