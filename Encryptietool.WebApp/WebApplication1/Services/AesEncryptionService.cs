@@ -6,13 +6,14 @@ namespace WebApplication1.Services
 {
     public class AesEncryptionService : IAesEncryptionService
     {
-        public EncryptionResult Encrypt(string plaintext, byte[] key, byte[] iv, CipherMode mode)
+        public EncryptionResult Encrypt(string plaintext, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
             EncryptionResult result;
             using Aes aes = Aes.Create();
             aes.Key = key;
             aes.IV = iv;
-            aes.Mode = mode;
+            aes.Mode = cipherMode;
+            aes.Padding = paddingMode;
             using ICryptoTransform encryptor = aes.CreateEncryptor();
 
             using MemoryStream memoryStream = new();
@@ -29,12 +30,13 @@ namespace WebApplication1.Services
             return result;
         }
 
-        public string Decrypt(byte[] ciphertext, byte[] key, byte[] iv, CipherMode mode)
+        public string Decrypt(byte[] ciphertext, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
             using Aes aes = Aes.Create();
             aes.Key = key;
             aes.IV = iv;
-            aes.Mode = mode;
+            aes.Mode = cipherMode;
+            aes.Padding = paddingMode;
             using ICryptoTransform decryptor = aes.CreateDecryptor();
 
             using MemoryStream memoryStream = new(ciphertext);
