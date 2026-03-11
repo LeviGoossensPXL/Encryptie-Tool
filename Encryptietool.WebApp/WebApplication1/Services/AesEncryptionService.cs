@@ -42,5 +42,33 @@ namespace WebApplication1.Services
             using StreamReader streamReader = new(cryptoStream);
             return streamReader.ReadToEnd();
         }
+
+        public EncryptionResult EncryptFile(string file, byte[] key, byte[] iv, CipherMode mode)
+        {
+            EncryptionResult result;
+            using Aes aes = Aes.Create();
+            aes.Key = key;
+            aes.IV = iv;
+            aes.Mode = mode;
+            using ICryptoTransform encryptor = aes.CreateEncryptor();
+            using FileStream fsw = new FileStream(file, FileMode.Open, FileAccess.Read);
+            using CryptoStream cryptoStream = new(fsw, encryptor, CryptoStreamMode.Read);
+            using StreamWriter streamWriter = new(cryptoStream);
+            throw new NotImplementedException();
+        }
+
+        public FileInfo DecryptFile(string encryptedFile, byte[] key, byte[] iv, CipherMode mode)
+        {
+            using Aes aes = Aes.Create();
+            aes.Key = key;
+            aes.IV = iv;
+            aes.Mode = mode;
+            using ICryptoTransform decryptor = aes.CreateDecryptor();
+
+            using FileStream fsw = new FileStream(encryptedFile, FileMode.Open, FileAccess.Read);
+            using CryptoStream cryptoStream = new(fsw, decryptor, CryptoStreamMode.Read);
+            using StreamWriter streamReader = new(cryptoStream);
+            throw new NotImplementedException();
+        }
     }
 }
