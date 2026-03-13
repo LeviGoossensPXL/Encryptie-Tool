@@ -45,32 +45,62 @@ namespace WebApplication1.Services
             return streamReader.ReadToEnd();
         }
 
-        public EncryptionResult EncryptFile(string file, byte[] key, byte[] iv, CipherMode mode)
+        public FileInfo EncryptFile(FileInfo file, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
             EncryptionResult result;
             using Aes aes = Aes.Create();
             aes.Key = key;
             aes.IV = iv;
-            aes.Mode = mode;
+            aes.Mode = cipherMode;
+            aes.Padding = paddingMode;
             using ICryptoTransform encryptor = aes.CreateEncryptor();
-            using FileStream fsw = new FileStream(file, FileMode.Open, FileAccess.Read);
-            using CryptoStream cryptoStream = new(fsw, encryptor, CryptoStreamMode.Read);
-            using StreamWriter streamWriter = new(cryptoStream);
-            throw new NotImplementedException();
+
+
+            using FileStream inFs = new(file.FullName, FileMode.Open);
+
+            using CryptoStream cryptoStream = new(inFs, encryptor, CryptoStreamMode.Read);
+
+            using FileStream outFs = new(Path.Combine(file.DirectoryName, "tmp.enc"), FileMode.Create);
+
+            byte[] buffer = new byte[2048];
+            while (cryptoStream.Read(buffer, 0, buffer.Length) > 0)
+            {
+                outFs.Write(buffer, 0, buffer.Length);
+            }
+
+            inFs.Close();
+            outFs.Close();
+
+            return new FileInfo(outFs.Name);
         }
 
-        public FileInfo DecryptFile(string encryptedFile, byte[] key, byte[] iv, CipherMode mode)
+        public FileInfo DecryptFile(FileInfo encryptedFile, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
+            EncryptionResult result;
             using Aes aes = Aes.Create();
             aes.Key = key;
             aes.IV = iv;
-            aes.Mode = mode;
+            aes.Mode = cipherMode;
+            aes.Padding = paddingMode;
             using ICryptoTransform decryptor = aes.CreateDecryptor();
 
-            using FileStream fsw = new FileStream(encryptedFile, FileMode.Open, FileAccess.Read);
-            using CryptoStream cryptoStream = new(fsw, decryptor, CryptoStreamMode.Read);
-            using StreamWriter streamReader = new(cryptoStream);
-            throw new NotImplementedException();
+
+            using FileStream inFs = new(encryptedFile.FullName, FileMode.Open);
+
+            using CryptoStream cryptoStream = new(inFs, decryptor, CryptoStreamMode.Read);
+
+            using FileStream outFs = new(Path.Combine(encryptedFile.DirectoryName, "tmp.dec"), FileMode.Create);
+
+            byte[] buffer = new byte[2048];
+            while (cryptoStream.Read(buffer, 0, buffer.Length) > 0)
+            {
+                outFs.Write(buffer, 0, buffer.Length);
+            }
+
+            inFs.Close();
+            outFs.Close();
+
+            return new FileInfo(outFs.Name);
         }
     }
 }
