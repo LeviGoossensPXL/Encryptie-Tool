@@ -1,5 +1,5 @@
 ﻿using System.Security.Cryptography;
-using WebApplication1.Models;
+using WebApplication1.Models.Results;
 using WebApplication1.Services.Interfaces;
 
 namespace WebApplication1.Services

@@ -20,21 +20,21 @@ namespace WebApplication1.Controllers
 
         public IActionResult Index()
         {
-            string plaintext = "hello world this is a new place for friends";
-            Aes aes = Aes.Create();
-            aes.GenerateIV();
-            aes.GenerateKey();
-            EncryptionResult result = _aesEncryptionService.Encrypt(plaintext, aes.Key, aes.IV, CipherMode.CBC, PaddingMode.None);
+            //string plaintext = "hello world this is a new place for friends";
+            //Aes aes = Aes.Create();
+            //aes.GenerateIV();
+            //aes.GenerateKey();
+            //EncryptionResult result = _aesEncryptionService.Encrypt(plaintext, aes.Key, aes.IV, CipherMode.CBC, PaddingMode.None);
 
-            string output = _aesEncryptionService.Decrypt(result.Ciphertext, aes.Key, aes.IV, CipherMode.CBC, PaddingMode.None);
-            EncryptionViewModel encryptionViewModel = new()
-            {
-                InputText = plaintext,
-                CipherText = Convert.ToBase64String(result.Ciphertext),
-                OutputText = output
-            };
+            //string output = _aesEncryptionService.Decrypt(result.Ciphertext, aes.Key, aes.IV, CipherMode.CBC, PaddingMode.None);
+            //EncryptionViewModel encryptionViewModel = new()
+            //{
+            //    InputText = plaintext,
+            //    CipherText = Convert.ToBase64String(result.Ciphertext),
+            //    OutputText = output
+            //};
 
-            return View(encryptionViewModel);
+            return View();
         }
 
         public IActionResult Privacy()
