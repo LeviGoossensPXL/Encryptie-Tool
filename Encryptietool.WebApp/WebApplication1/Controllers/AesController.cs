@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;
+using WebApplication1.Models;
 using WebApplication1.Models.Results;
 using WebApplication1.Services.Interfaces;
 
@@ -24,19 +25,16 @@ namespace WebApplication1.Controllers
 
         public IActionResult Encrypt()
         {
-            return View();
+            return View(new EncryptionViewModel());
         }
 
         [HttpPost]
-        public IActionResult EncryptPost()
+        public IActionResult Encrypt(EncryptionViewModel encryptionViewModel)
         {
             Aes aes = Aes.Create();
-            aes.GenerateIV();
-            aes.GenerateKey();
-            EncryptionResult result = _aesEncryptionService.Encrypt("hello", aes.Key, aes.IV,
-                CipherMode.CBC, PaddingMode.PKCS7);
-            _logger.Log(LogLevel.Information,Convert.ToBase64String(result.Ciphertext));
-            return View("Encrypt");
+            AesEncryptionResult result = _aesEncryptionService.Encrypt("hello", aes.Key, aes.IV, CipherMode.CBC, PaddingMode.PKCS7);
+            ViewBag.OutputText = Convert.ToBase64String(result.Ciphertext);
+            return View("Encrypt", encryptionViewModel);
         }
     }
 }

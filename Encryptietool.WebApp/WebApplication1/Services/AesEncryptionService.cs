@@ -6,9 +6,8 @@ namespace WebApplication1.Services
 {
     public class AesEncryptionService : IAesEncryptionService
     {
-        public EncryptionResult Encrypt(string plaintext, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
+        public AesEncryptionResult Encrypt(string plaintext, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
-            EncryptionResult result;
             using Aes aes = Aes.Create();
             aes.Key = key;
             aes.IV = iv;
@@ -22,7 +21,7 @@ namespace WebApplication1.Services
             streamWriter.Write(plaintext);
             streamWriter.Flush();
             cryptoStream.FlushFinalBlock();
-            result = new()
+            AesEncryptionResult result = new()
             {
                 Ciphertext = memoryStream.ToArray()
             };
@@ -47,7 +46,7 @@ namespace WebApplication1.Services
 
         public FileInfo EncryptFile(FileInfo file, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
-            EncryptionResult result;
+            AesEncryptionResult result;
             using Aes aes = Aes.Create();
             aes.Key = key;
             aes.IV = iv;
@@ -76,7 +75,7 @@ namespace WebApplication1.Services
 
         public FileInfo DecryptFile(FileInfo encryptedFile, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
-            EncryptionResult result;
+            AesEncryptionResult result;
             using Aes aes = Aes.Create();
             aes.Key = key;
             aes.IV = iv;
