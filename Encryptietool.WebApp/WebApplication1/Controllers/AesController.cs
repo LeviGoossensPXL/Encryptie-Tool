@@ -36,5 +36,19 @@ namespace WebApplication1.Controllers
             ViewBag.OutputText = Convert.ToBase64String(result.Ciphertext);
             return View("Encrypt", encryptionViewModel);
         }
+        
+        public IActionResult Decryption()
+        {
+            return View(new DecryptionViewModel());
+        }
+        
+        [HttpPost]
+        public IActionResult Decryption(DecryptionViewModel decryptionViewModel)
+        {
+            Aes aes = Aes.Create();
+            AesDecryptionResult result = _aesEncryptionService.Decrypt(Convert.FromBase64String(decryptionViewModel.InputText), aes.Key, aes.IV, CipherMode.CBC, PaddingMode.PKCS7);
+            ViewBag.OutputText = result.DecryptedText;
+            return View(decryptionViewModel);
+        }
     }
 }

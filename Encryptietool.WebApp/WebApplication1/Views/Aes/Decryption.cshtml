@@ -1,0 +1,39 @@
+﻿@model DecryptionViewModel
+<div>
+    <form asp-action="Decryption">
+        <div class="row">
+            <label asp-for="InputText" class="form-label">plaintext</label>
+            <textarea type="text" asp-for="InputText" class="form-control"></textarea>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label asp-for="Key" class="form-label">key</label>
+                <input asp-for="Key" class="form-control" type="text" />
+            </div>
+            <div class="col">
+                <label asp-for="IV" class="form-label">IV</label>
+                <input asp-for="IV" class="form-control" type="text" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label asp-for="CipherMode" class="form-label">cipher mode</label>
+                <select asp-for="CipherMode" class="form-select">
+                    <option>CBC</option>
+                    <option>ECB</option>
+                    <option>GCM</option>
+                </select>
+            </div>
+            <div class="col">
+                <label asp-for="PaddingMode" class="form-label">padding mode</label>
+                <select asp-for="PaddingMode" class="form-select">
+                    <option>PKCS7</option>
+                    <option>Zeros</option>
+                    <option>None</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Apply Decryption</button>
+    </form>
+    <code>@ViewBag.OutputText</code>
+</div>

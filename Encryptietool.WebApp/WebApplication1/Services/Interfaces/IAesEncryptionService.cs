@@ -8,6 +8,6 @@ namespace WebApplication1.Services.Interfaces
     {
         public AesEncryptionResult Encrypt(string plaintext, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode);
 
-        public string Decrypt(byte[] ciphertext, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode);
+        public AesDecryptionResult Decrypt(byte[] ciphertext, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode);
     }
 }

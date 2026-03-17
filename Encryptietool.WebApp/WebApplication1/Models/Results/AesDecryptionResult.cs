@@ -2,7 +2,7 @@
 {
     public class AesDecryptionResult
     {
-        public byte[] Ciphertext { get; set; }
+        public string DecryptedText { get; set; }
         public string metadata { get; set; }
     }
 }

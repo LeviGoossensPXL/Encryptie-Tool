@@ -29,7 +29,7 @@ namespace WebApplication1.Services
             return result;
         }
 
-        public string Decrypt(byte[] ciphertext, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
+        public AesDecryptionResult Decrypt(byte[] ciphertext, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
             using Aes aes = Aes.Create();
             aes.Key = key;
@@ -41,7 +41,11 @@ namespace WebApplication1.Services
             using MemoryStream memoryStream = new(ciphertext);
             using CryptoStream cryptoStream = new(memoryStream, decryptor, CryptoStreamMode.Read);
             using StreamReader streamReader = new(cryptoStream);
-            return streamReader.ReadToEnd();
+            AesDecryptionResult result = new()
+            {
+                DecryptedText = streamReader.ReadToEnd()
+            };
+            return result;
         }
 
         public FileInfo EncryptFile(FileInfo file, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
