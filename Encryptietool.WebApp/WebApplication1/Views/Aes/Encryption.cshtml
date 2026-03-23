@@ -1,10 +1,23 @@
 ﻿@model AesEncryptionViewModel
 <div>
     <a asp-action="Decryption">Go to decryption</a>
+    
+    <div class="btn-group" role="group">                                                                                                                                                                                                                                                                                                                                                                                           
+        <input type="radio" class="btn-check" name="IsFileMode" id="textMode" value="false" checked>                                                                                                                                                                                                                                                                                                                  
+        <label class="btn btn-outline-primary" for="textMode">Text</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                 
+        <input type="radio" class="btn-check" name="IsFileMode" id="fileMode" value="true" >                                                                                                                                                                                                                                                                                                                         
+        <label class="btn btn-outline-primary" for="fileMode">File</label>
+    </div>
+    
     <form asp-action="Encryption">
-        <div class="row">
+        <div class="row" id="textField">
             <label asp-for="@Model.InputText" class="form-label">plaintext</label>
-            <textarea type="text" asp-for="@Model.InputText" value="this will be encrypted" class="form-control"></textarea>
+            <textarea type="text" asp-for="@Model.InputText" class="form-control"></textarea>
+        </div>
+        <div class="row" id="fileField" style="display:none">
+            <label asp-for="@Model.InputFile" class="form-label">plainfile</label>
+            <input type="file" asp-for="@Model.InputFile" class="form-control"></input>
         </div>
         <div class="row">
             <div class="col">
@@ -38,3 +51,13 @@
     </form>
     <code>@Model.OutputText</code>
 </div>
+
+<script>
+      document.querySelectorAll('input[name="IsFileMode"]').forEach(radio => {
+          radio.addEventListener('change', () => {
+              const isFile = radio.value === 'true';
+              document.getElementById('textField').style.display = isFile ? 'none' : '';
+              document.getElementById('fileField').style.display = isFile ? '' : 'none';
+          });
+      });
+</script>
