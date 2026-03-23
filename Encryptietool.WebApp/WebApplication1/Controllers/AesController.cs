@@ -32,8 +32,10 @@ namespace WebApplication1.Controllers
         public IActionResult Encrypt(EncryptionViewModel encryptionViewModel)
         {
             Aes aes = Aes.Create();
-            AesEncryptionResult result = _aesEncryptionService.Encrypt("hello", aes.Key, aes.IV, CipherMode.CBC, PaddingMode.PKCS7);
-            ViewBag.OutputText = Convert.ToBase64String(result.Ciphertext);
+            AesEncryptionResult result = _aesEncryptionService.Encrypt(encryptionViewModel.InputText, aes.Key, aes.IV, CipherMode.CBC, PaddingMode.PKCS7);
+            encryptionViewModel.OutputText = Convert.ToBase64String(result.Ciphertext);
+            encryptionViewModel.IV = Convert.ToBase64String(aes.IV);
+            encryptionViewModel.Key = Convert.ToBase64String(aes.Key);
             return View("Encrypt", encryptionViewModel);
         }
         
@@ -46,6 +48,8 @@ namespace WebApplication1.Controllers
         public IActionResult Decryption(DecryptionViewModel decryptionViewModel)
         {
             Aes aes = Aes.Create();
+            aes.Key = Convert.FromBase64String(decryptionViewModel.Key);
+            aes.IV = Convert.FromBase64String(decryptionViewModel.IV);
             AesDecryptionResult result = _aesEncryptionService.Decrypt(Convert.FromBase64String(decryptionViewModel.InputText), aes.Key, aes.IV, CipherMode.CBC, PaddingMode.PKCS7);
             ViewBag.OutputText = result.DecryptedText;
             return View(decryptionViewModel);

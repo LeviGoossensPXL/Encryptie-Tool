@@ -2,31 +2,31 @@
 <div>
     <form asp-action="Encrypt">
         <div class="row">
-            <label asp-for="InputText" class="form-label">plaintext</label>
-            <textarea type="text" asp-for="InputText" value="this will be encrypted" class="form-control"></textarea>
+            <label asp-for="@Model.InputText" class="form-label">plaintext</label>
+            <textarea type="text" asp-for="@Model.InputText" value="this will be encrypted" class="form-control"></textarea>
         </div>
         <div class="row">
             <div class="col">
-                <label asp-for="Key" class="form-label">key</label>
-                <input asp-for="Key" class="form-control" type="text" />
+                <label asp-for="@Model.Key" class="form-label">key</label>
+                <input asp-for="@Model.Key" class="form-control" type="text" value="@Model.Key" />
             </div>
             <div class="col">
-                <label asp-for="IV" class="form-label">IV</label>
-                <input asp-for="IV" class="form-control" type="text" />
+                <label asp-for="@Model.IV" class="form-label">IV</label>
+                <input asp-for="@Model.IV" class="form-control" type="text" value="@Model.IV" />
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <label asp-for="CipherMode" class="form-label">cipher mode</label>
-                <select asp-for="CipherMode" class="form-select">
+                <label asp-for="@Model.CipherMode" class="form-label">cipher mode</label>
+                <select asp-for="@Model.CipherMode" class="form-select">
                     <option>CBC</option>
                     <option>ECB</option>
                     <option>GCM</option>
                 </select>
             </div>
             <div class="col">
-                <label asp-for="PaddingMode" class="form-label">padding mode</label>
-                <select asp-for="PaddingMode" class="form-select">
+                <label asp-for="@Model.PaddingMode" class="form-label">padding mode</label>
+                <select asp-for="@Model.PaddingMode" class="form-select">
                     <option>PKCS7</option>
                     <option>Zeros</option>
                     <option>None</option>
@@ -35,5 +35,5 @@
         </div>
         <button type="submit" class="btn btn-primary">Apply Encryption</button>
     </form>
-    <code>@ViewBag.OutputText</code>
+    <code>@Model.OutputText</code>
 </div>
