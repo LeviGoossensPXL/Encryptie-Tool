@@ -3,6 +3,7 @@
     public class AesEncryptionResult
     {
         public string Ciphertext { get; set; }
+        public FileInfo FileInfo { get; set; }
         public string metadata { get; set; }
     }
 }

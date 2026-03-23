@@ -48,12 +48,12 @@ namespace WebApplication1.Services
             return result;
         }
 
-        public FileInfo EncryptFile(FileInfo file, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
+        public AesEncryptionResult EncryptFile(FileInfo file, string key, string iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
-            AesEncryptionResult result;
+            var result = new AesEncryptionResult();
             using Aes aes = Aes.Create();
-            aes.Key = key;
-            aes.IV = iv;
+            aes.Key = Convert.FromBase64String(key);
+            aes.IV = Convert.FromBase64String(iv);
             aes.Mode = cipherMode;
             aes.Padding = paddingMode;
             using ICryptoTransform encryptor = aes.CreateEncryptor();
@@ -74,25 +74,25 @@ namespace WebApplication1.Services
             inFs.Close();
             outFs.Close();
 
-            return new FileInfo(outFs.Name);
+            return result;
         }
 
-        public FileInfo DecryptFile(FileInfo encryptedFile, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
+        public AesDecryptionResult DecryptFile(FileInfo file, string key, string iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
-            AesEncryptionResult result;
+            var result = new AesDecryptionResult();
             using Aes aes = Aes.Create();
-            aes.Key = key;
-            aes.IV = iv;
+            aes.Key = Convert.FromBase64String(key);
+            aes.IV = Convert.FromBase64String(iv);
             aes.Mode = cipherMode;
             aes.Padding = paddingMode;
             using ICryptoTransform decryptor = aes.CreateDecryptor();
 
 
-            using FileStream inFs = new(encryptedFile.FullName, FileMode.Open);
+            using FileStream inFs = new(file.FullName, FileMode.Open);
 
             using CryptoStream cryptoStream = new(inFs, decryptor, CryptoStreamMode.Read);
 
-            using FileStream outFs = new(Path.Combine(encryptedFile.DirectoryName, "tmp.dec"), FileMode.Create);
+            using FileStream outFs = new(Path.Combine(file.DirectoryName, "tmp.dec"), FileMode.Create);
 
             byte[] buffer = new byte[2048];
             while (cryptoStream.Read(buffer, 0, buffer.Length) > 0)
@@ -103,7 +103,7 @@ namespace WebApplication1.Services
             inFs.Close();
             outFs.Close();
 
-            return new FileInfo(outFs.Name);
+            return result;
         }
     }
 }
