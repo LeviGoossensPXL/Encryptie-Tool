@@ -38,8 +38,12 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public IActionResult Encryption(AesEncryptionViewModel aesEncryptionViewModel)
         {
-            AesEncryptionResult result = _aesEncryptionService.Encrypt(aesEncryptionViewModel.InputText, aesEncryptionViewModel.Key, aesEncryptionViewModel.IV, CipherMode.CBC, PaddingMode.PKCS7);
+            var cipherMode = Enum.Parse<CipherMode>(aesEncryptionViewModel.CipherMode);
+            var paddingMode = Enum.Parse<PaddingMode>(aesEncryptionViewModel.PaddingMode);
+            
+            AesEncryptionResult result = _aesEncryptionService.Encrypt(aesEncryptionViewModel.InputText, aesEncryptionViewModel.Key, aesEncryptionViewModel.IV, cipherMode, paddingMode);
             aesEncryptionViewModel.OutputText = result.Ciphertext;
+            
             return View(aesEncryptionViewModel);
         }
         
@@ -51,8 +55,12 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public IActionResult Decryption(AesDecryptionViewModel aesDecryptionViewModel)
         {
-            AesDecryptionResult result = _aesEncryptionService.Decrypt(aesDecryptionViewModel.InputText, aesDecryptionViewModel.Key, aesDecryptionViewModel.IV, CipherMode.CBC, PaddingMode.PKCS7);
+            var cipherMode = Enum.Parse<CipherMode>(aesDecryptionViewModel.CipherMode);
+            var paddingMode = Enum.Parse<PaddingMode>(aesDecryptionViewModel.PaddingMode);
+            
+            AesDecryptionResult result = _aesEncryptionService.Decrypt(aesDecryptionViewModel.InputText, aesDecryptionViewModel.Key, aesDecryptionViewModel.IV, cipherMode, paddingMode);
             aesDecryptionViewModel.OutputText = result.DecryptedText;
+            
             return View(aesDecryptionViewModel);
         }
     }
