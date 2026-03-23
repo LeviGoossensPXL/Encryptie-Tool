@@ -18,25 +18,25 @@ namespace WebApplication1.Controllers
             _aesEncryptionService = aesEncryptionService;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        // public IActionResult Index()
+        // {
+        //     return View();
+        // }
 
-        public IActionResult Encrypt()
+        public IActionResult Encryption()
         {
             return View(new EncryptionViewModel());
         }
 
         [HttpPost]
-        public IActionResult Encrypt(EncryptionViewModel encryptionViewModel)
+        public IActionResult Encryption(EncryptionViewModel encryptionViewModel)
         {
             Aes aes = Aes.Create();
             AesEncryptionResult result = _aesEncryptionService.Encrypt(encryptionViewModel.InputText, aes.Key, aes.IV, CipherMode.CBC, PaddingMode.PKCS7);
             encryptionViewModel.OutputText = Convert.ToBase64String(result.Ciphertext);
             encryptionViewModel.IV = Convert.ToBase64String(aes.IV);
             encryptionViewModel.Key = Convert.ToBase64String(aes.Key);
-            return View("Encrypt", encryptionViewModel);
+            return View(encryptionViewModel);
         }
         
         public IActionResult Decryption()
@@ -51,7 +51,7 @@ namespace WebApplication1.Controllers
             aes.Key = Convert.FromBase64String(decryptionViewModel.Key);
             aes.IV = Convert.FromBase64String(decryptionViewModel.IV);
             AesDecryptionResult result = _aesEncryptionService.Decrypt(Convert.FromBase64String(decryptionViewModel.InputText), aes.Key, aes.IV, CipherMode.CBC, PaddingMode.PKCS7);
-            ViewBag.OutputText = result.DecryptedText;
+            decryptionViewModel.OutputText = result.DecryptedText;
             return View(decryptionViewModel);
         }
     }

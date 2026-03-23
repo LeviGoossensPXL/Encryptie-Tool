@@ -1,18 +1,18 @@
-﻿@model DecryptionViewModel
+﻿@model EncryptionViewModel
 <div>
-    <form asp-action="Decryption">
+    <form asp-action="Encrypt">
         <div class="row">
             <label asp-for="@Model.InputText" class="form-label">plaintext</label>
-            <textarea type="text" asp-for="@Model.InputText" class="form-control"></textarea>
+            <textarea type="text" asp-for="@Model.InputText" value="this will be encrypted" class="form-control"></textarea>
         </div>
         <div class="row">
             <div class="col">
                 <label asp-for="@Model.Key" class="form-label">key</label>
-                <input asp-for="@Model.Key" class="form-control" type="text" />
+                <input asp-for="@Model.Key" class="form-control" type="text" value="@Model.Key" />
             </div>
             <div class="col">
                 <label asp-for="@Model.IV" class="form-label">IV</label>
-                <input asp-for="@Model.IV" class="form-control" type="text" />
+                <input asp-for="@Model.IV" class="form-control" type="text" value="@Model.IV" />
             </div>
         </div>
         <div class="row">
@@ -33,7 +33,7 @@
                 </select>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Apply Decryption</button>
+        <button type="submit" class="btn btn-primary">Apply Encryption</button>
     </form>
     <code>@Model.OutputText</code>
 </div>
