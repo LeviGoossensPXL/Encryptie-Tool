@@ -6,8 +6,8 @@ namespace WebApplication1.Services.Interfaces
 {
     public interface IAesEncryptionService
     {
-        public AesEncryptionResult Encrypt(string plaintext, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode);
+        public AesEncryptionResult Encrypt(string plaintext, string key, string iv, CipherMode cipherMode, PaddingMode paddingMode);
 
-        public AesDecryptionResult Decrypt(byte[] ciphertext, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode);
+        public AesDecryptionResult Decrypt(string ciphertext, string key, string iv, CipherMode cipherMode, PaddingMode paddingMode);
     }
 }

@@ -6,11 +6,11 @@ namespace WebApplication1.Services
 {
     public class AesEncryptionService : IAesEncryptionService
     {
-        public AesEncryptionResult Encrypt(string plaintext, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
+        public AesEncryptionResult Encrypt(string plaintext, string key, string iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
             using Aes aes = Aes.Create();
-            aes.Key = key;
-            aes.IV = iv;
+            aes.Key = Convert.FromBase64String(key);
+            aes.IV = Convert.FromBase64String(iv);
             aes.Mode = cipherMode;
             aes.Padding = paddingMode;
             using ICryptoTransform encryptor = aes.CreateEncryptor();
@@ -23,22 +23,22 @@ namespace WebApplication1.Services
             cryptoStream.FlushFinalBlock();
             AesEncryptionResult result = new()
             {
-                Ciphertext = memoryStream.ToArray()
+                Ciphertext = Convert.ToBase64String(memoryStream.ToArray())
             };
 
             return result;
         }
 
-        public AesDecryptionResult Decrypt(byte[] ciphertext, byte[] key, byte[] iv, CipherMode cipherMode, PaddingMode paddingMode)
+        public AesDecryptionResult Decrypt(string ciphertext, string key, string iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
             using Aes aes = Aes.Create();
-            aes.Key = key;
-            aes.IV = iv;
+            aes.Key = Convert.FromBase64String(key);
+            aes.IV = Convert.FromBase64String(iv);
             aes.Mode = cipherMode;
             aes.Padding = paddingMode;
             using ICryptoTransform decryptor = aes.CreateDecryptor();
 
-            using MemoryStream memoryStream = new(ciphertext);
+            using MemoryStream memoryStream = new(Convert.FromBase64String(ciphertext));
             using CryptoStream cryptoStream = new(memoryStream, decryptor, CryptoStreamMode.Read);
             using StreamReader streamReader = new(cryptoStream);
             AesDecryptionResult result = new()
