@@ -1,6 +1,6 @@
-﻿@model EncryptionViewModel
+﻿@model AesEncryptionViewModel
 <div>
-    <form asp-action="Encrypt">
+    <form asp-action="Encryption">
         <div class="row">
             <label asp-for="@Model.InputText" class="form-label">plaintext</label>
             <textarea type="text" asp-for="@Model.InputText" value="this will be encrypted" class="form-control"></textarea>

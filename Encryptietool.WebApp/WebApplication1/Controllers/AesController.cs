@@ -25,34 +25,34 @@ namespace WebApplication1.Controllers
 
         public IActionResult Encryption()
         {
-            return View(new EncryptionViewModel());
+            return View(new AesEncryptionViewModel());
         }
 
         [HttpPost]
-        public IActionResult Encryption(EncryptionViewModel encryptionViewModel)
+        public IActionResult Encryption(AesEncryptionViewModel aesEncryptionViewModel)
         {
             Aes aes = Aes.Create();
-            AesEncryptionResult result = _aesEncryptionService.Encrypt(encryptionViewModel.InputText, aes.Key, aes.IV, CipherMode.CBC, PaddingMode.PKCS7);
-            encryptionViewModel.OutputText = Convert.ToBase64String(result.Ciphertext);
-            encryptionViewModel.IV = Convert.ToBase64String(aes.IV);
-            encryptionViewModel.Key = Convert.ToBase64String(aes.Key);
-            return View(encryptionViewModel);
+            AesEncryptionResult result = _aesEncryptionService.Encrypt(aesEncryptionViewModel.InputText, aes.Key, aes.IV, CipherMode.CBC, PaddingMode.PKCS7);
+            aesEncryptionViewModel.OutputText = Convert.ToBase64String(result.Ciphertext);
+            aesEncryptionViewModel.IV = Convert.ToBase64String(aes.IV);
+            aesEncryptionViewModel.Key = Convert.ToBase64String(aes.Key);
+            return View(aesEncryptionViewModel);
         }
         
         public IActionResult Decryption()
         {
-            return View(new DecryptionViewModel());
+            return View(new AesDecryptionViewModel());
         }
         
         [HttpPost]
-        public IActionResult Decryption(DecryptionViewModel decryptionViewModel)
+        public IActionResult Decryption(AesDecryptionViewModel aesDecryptionViewModel)
         {
             Aes aes = Aes.Create();
-            aes.Key = Convert.FromBase64String(decryptionViewModel.Key);
-            aes.IV = Convert.FromBase64String(decryptionViewModel.IV);
-            AesDecryptionResult result = _aesEncryptionService.Decrypt(Convert.FromBase64String(decryptionViewModel.InputText), aes.Key, aes.IV, CipherMode.CBC, PaddingMode.PKCS7);
-            decryptionViewModel.OutputText = result.DecryptedText;
-            return View(decryptionViewModel);
+            aes.Key = Convert.FromBase64String(aesDecryptionViewModel.Key);
+            aes.IV = Convert.FromBase64String(aesDecryptionViewModel.IV);
+            AesDecryptionResult result = _aesEncryptionService.Decrypt(Convert.FromBase64String(aesDecryptionViewModel.InputText), aes.Key, aes.IV, CipherMode.CBC, PaddingMode.PKCS7);
+            aesDecryptionViewModel.OutputText = result.DecryptedText;
+            return View(aesDecryptionViewModel);
         }
     }
 }

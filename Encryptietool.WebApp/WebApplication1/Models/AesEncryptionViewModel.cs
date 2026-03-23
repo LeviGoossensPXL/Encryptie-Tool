@@ -1,6 +1,6 @@
 ﻿namespace WebApplication1.Models
 {
-    public class EncryptionViewModel
+    public class AesEncryptionViewModel
     {
         public string InputText { get; set; }
 
