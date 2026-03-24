@@ -22,12 +22,22 @@
         <div class="row">
             <div class="col">
                 <label asp-for="@Model.Key" class="form-label">key</label>
-                <input asp-for="@Model.Key" class="form-control" type="text" value="@Model.Key"/>
+                <div class="input-group">
+                    <input asp-for="@Model.Key" class="form-control" type="text" value="@Model.Key"/>
+                    <label class="input-group-text" title="Load key from file" style="cursor:pointer">
+                        📂<input type="file" id="decKeyFile" style="display:none">
+                    </label>
+                </div>
             </div>
             <div class="col">
                 <label asp-for="@Model.IV" class="form-label">IV</label>
-                <input asp-for="@Model.IV" class="form-control" type="text" value="@Model.IV"/>
-            </div>
+                <div class="input-group">
+                    <input asp-for="@Model.IV" class="form-control" type="text" value="@Model.IV"/>
+                    <label class="input-group-text" title="Load iv from file" style="cursor:pointer">
+                        📂<input type="file" id="ivFile" style="display:none">
+                    </label>
+                </div>
+            </div>i
         </div>
         <div class="row">
             <div class="col">
@@ -60,3 +70,22 @@
         <a asp-action="Download" asp-route-filename="@Model.OutputFile" class="btn btn-success">Download</a>
     </div>
 </div>
+
+<script>
+    //read key file in
+    document.getElementById('decKeyFile').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => document.getElementById('Key').value = e.target.result.trim();
+        reader.readAsText(file);
+    });
+    //read iv file in
+    document.getElementById('ivFile').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => document.getElementById('IV').value = e.target.result.trim();
+        reader.readAsText(file);
+    });
+</script>
