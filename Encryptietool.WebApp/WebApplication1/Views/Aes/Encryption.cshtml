@@ -59,7 +59,7 @@
     </div>
     <div class="row mx-0 file-field" style="display: none">
         <label asp-for="@Model.OutputFile" class="form-label">output file</label>
-        <input type="file" asp-for="@Model.OutputFile" class="form-control"></input>
+        <a asp-action="Download" asp-route-filename="@Model.OutputFile" class="btn btn-success">Download</a>
     </div>
 </div>
 

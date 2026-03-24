@@ -68,6 +68,8 @@ namespace WebApplication1.Services
 
             inFs.Close();
             outFs.Close();
+            
+            result.FileInfo = new FileInfo(outFs.Name);
 
             return result;
         }
@@ -92,6 +94,8 @@ namespace WebApplication1.Services
 
             inFs.Close();
             outFs.Close();
+            
+            result.FileInfo = new FileInfo(outFs.Name);
 
             return result;
         }

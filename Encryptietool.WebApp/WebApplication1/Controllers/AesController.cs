@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;
+using Azure.Core;
 using WebApplication1.Models;
 using WebApplication1.Models.Results;
 using WebApplication1.Services.Interfaces;
@@ -13,7 +15,8 @@ namespace WebApplication1.Controllers
         private readonly IAesEncryptionService _aesEncryptionService;
         private readonly IFileService _fileService;
 
-        public AesController(ILogger<AesController> logger, IAesEncryptionService aesEncryptionService, IFileService fileService)
+        public AesController(ILogger<AesController> logger, IAesEncryptionService aesEncryptionService,
+            IFileService fileService)
         {
             _logger = logger;
             _aesEncryptionService = aesEncryptionService;
@@ -42,6 +45,7 @@ namespace WebApplication1.Controllers
         {
             var cipherMode = Enum.Parse<CipherMode>(aesEncryptionViewModel.CipherMode);
             var paddingMode = Enum.Parse<PaddingMode>(aesEncryptionViewModel.PaddingMode);
+            AesEncryptionResult aesEncryptionResult;
             if (aesEncryptionViewModel.IsFileUpload)
             {
                 var fileSaveResult = await _fileService.Save(aesEncryptionViewModel.InputFile);
@@ -49,25 +53,31 @@ namespace WebApplication1.Controllers
                 {
                     return View(aesEncryptionViewModel);
                 }
-                var aesEncryptionResult = _aesEncryptionService.EncryptFile(fileSaveResult.FileInfo, aesEncryptionViewModel.Key, aesEncryptionViewModel.IV, cipherMode, paddingMode);
+
+                aesEncryptionResult = _aesEncryptionService.EncryptFile(fileSaveResult.FileInfo,
+                    aesEncryptionViewModel.Key, aesEncryptionViewModel.IV, cipherMode, paddingMode);
+                aesEncryptionViewModel.OutputFile = aesEncryptionResult.FileInfo.Name;
                 return View(aesEncryptionViewModel);
             }
-            AesEncryptionResult result = _aesEncryptionService.Encrypt(aesEncryptionViewModel.InputText, aesEncryptionViewModel.Key, aesEncryptionViewModel.IV, cipherMode, paddingMode);
-            aesEncryptionViewModel.OutputText = result.Ciphertext;
-            
+
+            aesEncryptionResult = _aesEncryptionService.Encrypt(aesEncryptionViewModel.InputText,
+                aesEncryptionViewModel.Key, aesEncryptionViewModel.IV, cipherMode, paddingMode);
+            aesEncryptionViewModel.OutputText = aesEncryptionResult.Ciphertext;
+
             return View(aesEncryptionViewModel);
         }
-        
+
         public IActionResult Decryption()
         {
             return View(new AesDecryptionViewModel());
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Decryption(AesDecryptionViewModel aesDecryptionViewModel)
         {
             var cipherMode = Enum.Parse<CipherMode>(aesDecryptionViewModel.CipherMode);
             var paddingMode = Enum.Parse<PaddingMode>(aesDecryptionViewModel.PaddingMode);
+            AesDecryptionResult aesDecryptionResult;
             if (aesDecryptionViewModel.IsFileUpload)
             {
                 var fileSaveResult = await _fileService.Save(aesDecryptionViewModel.InputFile);
@@ -75,13 +85,36 @@ namespace WebApplication1.Controllers
                 {
                     return View(aesDecryptionViewModel);
                 }
-                var aesDecryptionResult = _aesEncryptionService.DecryptFile(fileSaveResult.FileInfo, aesDecryptionViewModel.Key, aesDecryptionViewModel.IV, cipherMode, paddingMode);
+
+                aesDecryptionResult = _aesEncryptionService.DecryptFile(fileSaveResult.FileInfo,
+                    aesDecryptionViewModel.Key, aesDecryptionViewModel.IV, cipherMode, paddingMode);
+                aesDecryptionViewModel.OutputFile = aesDecryptionResult.FileInfo.Name;
                 return View(aesDecryptionViewModel);
             }
-            AesDecryptionResult result = _aesEncryptionService.Decrypt(aesDecryptionViewModel.InputText, aesDecryptionViewModel.Key, aesDecryptionViewModel.IV, cipherMode, paddingMode);
-            aesDecryptionViewModel.OutputText = result.DecryptedText;
-            
+
+            aesDecryptionResult = _aesEncryptionService.Decrypt(aesDecryptionViewModel.InputText,
+                aesDecryptionViewModel.Key, aesDecryptionViewModel.IV, cipherMode, paddingMode);
+            aesDecryptionViewModel.OutputText = aesDecryptionResult.DecryptedText;
+
             return View(aesDecryptionViewModel);
+        }
+
+        [HttpGet]
+        public IActionResult Download(string filename)
+        {
+            if (string.IsNullOrEmpty(filename))
+            {
+                return Content("Filename is not provided.");
+            }
+            var fileDownloadResult = _fileService.Download(filename);
+            if (!fileDownloadResult.Succeeded)
+            {
+                return Content("File not found.");
+            }
+
+            byte[] fileBytes = System.IO.File.ReadAllBytes(fileDownloadResult.FileInfo.FullName);
+            
+            return File(fileBytes, "application/octet-stream", filename);
         }
     }
 }

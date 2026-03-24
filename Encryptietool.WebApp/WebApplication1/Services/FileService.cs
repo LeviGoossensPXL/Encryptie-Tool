@@ -5,11 +5,12 @@ namespace WebApplication1.Services;
 
 public class FileService : IFileService
 {
-    private readonly string _uploadsFolder;
+    private readonly string _filesFolder;
 
     public FileService(IWebHostEnvironment hostingEnvironment)
     {
-        _uploadsFolder = Path.Combine(hostingEnvironment.ContentRootPath, "wwwroot\\uploadedFiles");
+        _filesFolder = Path.Combine(hostingEnvironment.ContentRootPath, "wwwroot", "Files");
+        Directory.CreateDirectory(_filesFolder);
     }
 
     public async Task<FileSaveResult> Save(IFormFile formFile)
@@ -21,11 +22,10 @@ public class FileService : IFileService
             return result;
         }
         
-        string filePath = Path.Combine(_uploadsFolder, formFile.FileName);
+        string filePath = Path.Combine(_filesFolder, formFile.FileName);
         await using var fileStream = new FileStream(filePath, FileMode.Create);
         await formFile.CopyToAsync(fileStream);
         await fileStream.FlushAsync();
-        // fileStream.Close();
         result.FileInfo = new FileInfo(filePath);
         return result;
     }
@@ -34,6 +34,19 @@ public class FileService : IFileService
     {
         var result = new FileDeleteResult();
         fileInfo.Delete();
+        return result;
+    }
+
+    public FileDownloadResult Download(string fileName)
+    {
+        var result = new FileDownloadResult();
+        var fileInfo = new FileInfo(Path.Combine(_filesFolder, fileName));
+        if (!File.Exists(fileInfo.FullName))
+        {
+            result.Failed("file doesn't exist");
+            return result;
+        }
+        result.FileInfo = new FileInfo(fileInfo.FullName);
         return result;
     }
 }
