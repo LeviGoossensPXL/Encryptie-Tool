@@ -23,7 +23,7 @@ namespace WebApplication1.Services
             cryptoStream.FlushFinalBlock();
             AesEncryptionResult result = new()
             {
-                Ciphertext = Convert.ToBase64String(memoryStream.ToArray())
+                EncryptedText = Convert.ToBase64String(memoryStream.ToArray())
             };
 
             return result;

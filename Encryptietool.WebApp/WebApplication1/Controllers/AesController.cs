@@ -63,7 +63,7 @@ namespace WebApplication1.Controllers
 
             aesEncryptionResult = _aesEncryptionService.Encrypt(aesEncryptionViewModel.InputText,
                 aesEncryptionViewModel.Key, aesEncryptionViewModel.IV, cipherMode, paddingMode);
-            aesEncryptionViewModel.OutputText = aesEncryptionResult.Ciphertext;
+            aesEncryptionViewModel.OutputText = aesEncryptionResult.EncryptedText;
 
             return View(aesEncryptionViewModel);
         }
