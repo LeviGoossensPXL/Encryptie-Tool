@@ -1,7 +1,15 @@
+using WebApplication1.Services;
+using WebApplication1.Services.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+builder.Services.AddScoped<IAesKeyGenerator, AesKeyGenerator>();
+builder.Services.AddScoped<IRsaKeyGenerator, RsaKeyGenerator>();
+
 
 var app = builder.Build();
 
