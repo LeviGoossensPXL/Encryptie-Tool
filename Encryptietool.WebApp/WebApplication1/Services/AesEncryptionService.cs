@@ -62,7 +62,7 @@ namespace WebApplication1.Services
             
             using CryptoStream cryptoStream = new(inFs, encryptor, CryptoStreamMode.Read);
 
-            using FileStream outFs = new(Path.Combine(file.DirectoryName, "tmp.enc"), FileMode.Create);
+            using FileStream outFs = new(Path.Combine(file.DirectoryName, $"{file.Name}.encrypted"), FileMode.Create);
             
             cryptoStream.CopyTo(outFs);
 
@@ -88,7 +88,7 @@ namespace WebApplication1.Services
 
             using CryptoStream cryptoStream = new(inFs, decryptor, CryptoStreamMode.Read);
 
-            using FileStream outFs = new(Path.Combine(file.DirectoryName, "tmp.dec"), FileMode.Create);
+            using FileStream outFs = new(Path.Combine(file.DirectoryName, $"{file.Name}.decrypted"), FileMode.Create);
 
             cryptoStream.CopyTo(outFs);
 
