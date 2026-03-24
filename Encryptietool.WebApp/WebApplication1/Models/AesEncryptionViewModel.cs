@@ -3,7 +3,7 @@
     public class AesEncryptionViewModel
     {
         public string InputText { get; set; }
-        public string InputFile { get; set; }
+        public IFormFile InputFile { get; set; }
 
         public string Key { get; set; }
         public string IV { get; set; }

@@ -11,11 +11,13 @@ namespace WebApplication1.Controllers
     {
         private readonly ILogger<AesController> _logger;
         private readonly IAesEncryptionService _aesEncryptionService;
+        private readonly IFileService _fileService;
 
-        public AesController(ILogger<AesController> logger, IAesEncryptionService aesEncryptionService)
+        public AesController(ILogger<AesController> logger, IAesEncryptionService aesEncryptionService, IFileService fileService)
         {
             _logger = logger;
             _aesEncryptionService = aesEncryptionService;
+            _fileService = fileService;
         }
 
         // public IActionResult Index()
@@ -36,11 +38,11 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public IActionResult Encryption(AesEncryptionViewModel aesEncryptionViewModel)
+        public async Task<IActionResult> Encryption(AesEncryptionViewModel aesEncryptionViewModel)
         {
             var cipherMode = Enum.Parse<CipherMode>(aesEncryptionViewModel.CipherMode);
             var paddingMode = Enum.Parse<PaddingMode>(aesEncryptionViewModel.PaddingMode);
-            
+            await _fileService.Save(aesEncryptionViewModel.InputFile);
             AesEncryptionResult result = _aesEncryptionService.Encrypt(aesEncryptionViewModel.InputText, aesEncryptionViewModel.Key, aesEncryptionViewModel.IV, cipherMode, paddingMode);
             aesEncryptionViewModel.OutputText = result.Ciphertext;
             
