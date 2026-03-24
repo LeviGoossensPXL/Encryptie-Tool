@@ -30,7 +30,7 @@ public class FileService : IFileService
         return result;
     }
 
-    public async Task<FileDeleteResult> Delete(FileInfo fileInfo)
+    public FileDeleteResult Delete(FileInfo fileInfo)
     {
         var result = new FileDeleteResult();
         fileInfo.Delete();

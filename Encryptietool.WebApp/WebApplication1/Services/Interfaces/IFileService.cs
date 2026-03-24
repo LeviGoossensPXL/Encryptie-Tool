@@ -5,5 +5,5 @@ namespace WebApplication1.Services.Interfaces;
 public interface IFileService
 {
     public Task<FileSaveResult> Save(IFormFile formFile);
-    public Task<FileDeleteResult> Delete(FileInfo fileInfo);
+    public FileDeleteResult Delete(FileInfo fileInfo);
 }

@@ -13,6 +13,7 @@
         public string CipherMode { get; set; }
         public string PaddingMode { get; set; }
 
-        public string OutputText { get; set; }
+        public string? OutputText { get; set; }
+        public string? OutputFile { get; set; }
     }
 }
