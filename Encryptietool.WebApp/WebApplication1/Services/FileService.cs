@@ -22,7 +22,7 @@ public class FileService : IFileService
             return result;
         }
         
-        string filePath = Path.Combine(_filesFolder, formFile.FileName);
+        string filePath = Path.Combine(_filesFolder, Guid.NewGuid().ToString());
         await using var fileStream = new FileStream(filePath, FileMode.Create);
         await formFile.CopyToAsync(fileStream);
         await fileStream.FlushAsync();
