@@ -10,7 +10,7 @@
         <label class="btn btn-outline-primary" for="fileMode">File</label>
     </div>
     
-    <form asp-action="Decryption">
+    <form asp-action="Decryption" enctype="multipart/form-data">
         <div class="row" id="textField">
             <label asp-for="@Model.InputText" class="form-label">plaintext</label>
             <textarea type="text" asp-for="@Model.InputText" class="form-control"></textarea>

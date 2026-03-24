@@ -1,6 +1,8 @@
-﻿namespace WebApplication1.Services.Interfaces;
+﻿using WebApplication1.Models.Results;
+
+namespace WebApplication1.Services.Interfaces;
 
 public interface IFileService
 {
-    public Task Save(IFormFile formFile);
+    public Task<FileSaveResult> Save(IFormFile formFile);
 }

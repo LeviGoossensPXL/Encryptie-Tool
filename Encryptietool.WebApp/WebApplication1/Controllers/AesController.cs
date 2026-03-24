@@ -42,7 +42,10 @@ namespace WebApplication1.Controllers
         {
             var cipherMode = Enum.Parse<CipherMode>(aesEncryptionViewModel.CipherMode);
             var paddingMode = Enum.Parse<PaddingMode>(aesEncryptionViewModel.PaddingMode);
-            await _fileService.Save(aesEncryptionViewModel.InputFile);
+            if (aesEncryptionViewModel.IsFileUpload)
+            {
+                await _fileService.Save(aesEncryptionViewModel.InputFile);
+            }
             AesEncryptionResult result = _aesEncryptionService.Encrypt(aesEncryptionViewModel.InputText, aesEncryptionViewModel.Key, aesEncryptionViewModel.IV, cipherMode, paddingMode);
             aesEncryptionViewModel.OutputText = result.Ciphertext;
             

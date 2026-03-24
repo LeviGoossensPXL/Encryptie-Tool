@@ -2,8 +2,10 @@
 {
     public class AesEncryptionViewModel
     {
-        public string InputText { get; set; }
-        public IFormFile InputFile { get; set; }
+        public string? InputText { get; set; }
+        public IFormFile? InputFile { get; set; }
+        
+        public bool IsFileUpload => InputFile != null;
 
         public string Key { get; set; }
         public string IV { get; set; }
