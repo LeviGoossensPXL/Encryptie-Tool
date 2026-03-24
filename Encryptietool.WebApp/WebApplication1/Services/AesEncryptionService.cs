@@ -58,18 +58,13 @@ namespace WebApplication1.Services
             aes.Padding = paddingMode;
             using ICryptoTransform encryptor = aes.CreateEncryptor();
 
-
             using FileStream inFs = new(file.FullName, FileMode.Open);
-
+            
             using CryptoStream cryptoStream = new(inFs, encryptor, CryptoStreamMode.Read);
 
             using FileStream outFs = new(Path.Combine(file.DirectoryName, "tmp.enc"), FileMode.Create);
-
-            byte[] buffer = new byte[2048];
-            while (cryptoStream.Read(buffer, 0, buffer.Length) > 0)
-            {
-                outFs.Write(buffer, 0, buffer.Length);
-            }
+            
+            cryptoStream.CopyTo(outFs);
 
             inFs.Close();
             outFs.Close();
@@ -87,18 +82,13 @@ namespace WebApplication1.Services
             aes.Padding = paddingMode;
             using ICryptoTransform decryptor = aes.CreateDecryptor();
 
-
             using FileStream inFs = new(file.FullName, FileMode.Open);
 
             using CryptoStream cryptoStream = new(inFs, decryptor, CryptoStreamMode.Read);
 
             using FileStream outFs = new(Path.Combine(file.DirectoryName, "tmp.dec"), FileMode.Create);
 
-            byte[] buffer = new byte[2048];
-            while (cryptoStream.Read(buffer, 0, buffer.Length) > 0)
-            {
-                outFs.Write(buffer, 0, buffer.Length);
-            }
+            cryptoStream.CopyTo(outFs);
 
             inFs.Close();
             outFs.Close();

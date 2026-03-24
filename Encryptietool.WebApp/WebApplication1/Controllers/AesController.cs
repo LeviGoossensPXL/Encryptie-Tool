@@ -44,7 +44,13 @@ namespace WebApplication1.Controllers
             var paddingMode = Enum.Parse<PaddingMode>(aesEncryptionViewModel.PaddingMode);
             if (aesEncryptionViewModel.IsFileUpload)
             {
-                await _fileService.Save(aesEncryptionViewModel.InputFile);
+                var fileSaveResult = await _fileService.Save(aesEncryptionViewModel.InputFile);
+                if (!fileSaveResult.Succeeded)
+                {
+                    return View(aesEncryptionViewModel);
+                }
+                var aesEncryptionResult = _aesEncryptionService.EncryptFile(fileSaveResult.FileInfo, aesEncryptionViewModel.Key, aesEncryptionViewModel.IV, cipherMode, paddingMode);
+                return View(aesEncryptionViewModel);
             }
             AesEncryptionResult result = _aesEncryptionService.Encrypt(aesEncryptionViewModel.InputText, aesEncryptionViewModel.Key, aesEncryptionViewModel.IV, cipherMode, paddingMode);
             aesEncryptionViewModel.OutputText = result.Ciphertext;
@@ -58,11 +64,20 @@ namespace WebApplication1.Controllers
         }
         
         [HttpPost]
-        public IActionResult Decryption(AesDecryptionViewModel aesDecryptionViewModel)
+        public async Task<IActionResult> Decryption(AesDecryptionViewModel aesDecryptionViewModel)
         {
             var cipherMode = Enum.Parse<CipherMode>(aesDecryptionViewModel.CipherMode);
             var paddingMode = Enum.Parse<PaddingMode>(aesDecryptionViewModel.PaddingMode);
-            
+            if (aesDecryptionViewModel.IsFileUpload)
+            {
+                var fileSaveResult = await _fileService.Save(aesDecryptionViewModel.InputFile);
+                if (!fileSaveResult.Succeeded)
+                {
+                    return View(aesDecryptionViewModel);
+                }
+                var aesDecryptionResult = _aesEncryptionService.DecryptFile(fileSaveResult.FileInfo, aesDecryptionViewModel.Key, aesDecryptionViewModel.IV, cipherMode, paddingMode);
+                return View(aesDecryptionViewModel);
+            }
             AesDecryptionResult result = _aesEncryptionService.Decrypt(aesDecryptionViewModel.InputText, aesDecryptionViewModel.Key, aesDecryptionViewModel.IV, cipherMode, paddingMode);
             aesDecryptionViewModel.OutputText = result.DecryptedText;
             

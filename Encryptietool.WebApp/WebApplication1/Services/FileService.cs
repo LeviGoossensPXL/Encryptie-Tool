@@ -24,7 +24,16 @@ public class FileService : IFileService
         string filePath = Path.Combine(_uploadsFolder, formFile.FileName);
         await using var fileStream = new FileStream(filePath, FileMode.Create);
         await formFile.CopyToAsync(fileStream);
+        await fileStream.FlushAsync();
+        // fileStream.Close();
         result.FileInfo = new FileInfo(filePath);
+        return result;
+    }
+
+    public async Task<FileDeleteResult> Delete(FileInfo fileInfo)
+    {
+        var result = new FileDeleteResult();
+        fileInfo.Delete();
         return result;
     }
 }
