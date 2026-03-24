@@ -3,13 +3,9 @@
     <a asp-action="Decryption">Go to decryption</a>
     
     <form asp-action="Encryption" enctype="multipart/form-data">
-    
-        <div class="btn-group" role="group">                                                                                                                                                                                                                                                                                                                                                                                           
-            <input type="radio" class="btn-check" name="IsFileMode" id="textMode" value="false" checked>                                                                                                                                                                                                                                                                                                                  
-            <label class="btn btn-outline-primary" for="textMode">Text</label>
-                                                                                                                                                                                                                                                                                                                                                                                                                                 
-            <input type="radio" class="btn-check" name="IsFileMode" id="fileMode" value="true">                                                                                                                                                                                                                                                                                                                         
-            <label class="btn btn-outline-primary" for="fileMode">File</label>
+        <div class="form-check">
+            <input type="checkbox" asp-for="IsFileUpload" class="form-check-input">                                                                                                                                                                                                                                                                                                                                                        
+            <label asp-for="IsFileUpload" class="form-check-label">File?</label> 
         </div>
         
         <div class="row mx-0 text-field">
@@ -17,7 +13,7 @@
             <textarea type="text" asp-for="@Model.InputText" class="form-control"></textarea>
         </div>
         
-        <div class="row mx-0 file-field" style="display: none">
+        <div class="row mx-0 file-field">
             <label asp-for="@Model.InputFile" class="form-label">input file</label>
             <input type="file" asp-for="@Model.InputFile" class="form-control"></input>
         </div>
@@ -57,22 +53,8 @@
         <label asp-for="@Model.OutputText" class="form-label">input text</label>
         <textarea type="text" asp-for="@Model.OutputText" class="form-control" disabled></textarea>
     </div>
-    <div class="row mx-0 file-field" style="display: none">
+    <div class="row mx-0 file-field">
         <label asp-for="@Model.OutputFile" class="form-label">output file</label>
         <a asp-action="Download" asp-route-filename="@Model.OutputFile" class="btn btn-success">Download</a>
     </div>
 </div>
-
-<script>
-      document.querySelectorAll('input[name="IsFileMode"]').forEach(radio => {
-          radio.addEventListener('change', () => {
-              const isFile = radio.value === 'true'
-              document.querySelectorAll('.text-field').forEach(div => {
-                  div.style.display = isFile ? 'none' : ''
-              });
-              document.querySelectorAll('.file-field').forEach(div => {
-                  div.style.display = isFile ? '' : 'none'
-              });
-          });
-      });
-</script>

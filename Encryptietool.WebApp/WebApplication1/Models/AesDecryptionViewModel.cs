@@ -7,7 +7,7 @@ namespace WebApplication1.Models
         public string? InputText { get; set; }
         public IFormFile? InputFile { get; set; }
         
-        public bool IsFileUpload => InputFile != null;
+        public bool IsFileUpload { get; set; }
         [Required]
         public string Key { get; set; }
         [Required]
