@@ -7,6 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IAesEncryptionService, AesEncryptionService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IAesKeyGenerator, AesKeyGenerator>();
+builder.Services.AddScoped<IRsaKeyGenerator, RsaKeyGenerator>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

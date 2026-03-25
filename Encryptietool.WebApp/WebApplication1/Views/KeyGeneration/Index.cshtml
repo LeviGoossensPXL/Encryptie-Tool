@@ -1,0 +1,170 @@
+﻿@model WebApplication1.Models.KeyGenerationViewModel
+
+@{
+    ViewData["Title"] = "Key Generation";
+}
+
+<div class="container mt-4">
+    <h2>Key Generation</h2>
+    <p class="text-muted">Generate AES or RSA keys for the encryption tool.</p>
+
+    <form asp-action="Index" method="post" class="card p-4 shadow-sm">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="KeyType" class="form-label">Key Type</label>
+            <select asp-for="KeyType" class="form-select" id="keyTypeSelect">
+                <option value="AES">AES</option>
+                <option value="RSA">RSA</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="KeySize" class="form-label">Key Size</label>
+            <select asp-for="KeySize" class="form-select" id="keySizeSelect"></select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Generate</button>
+    </form>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger mt-3">@Model.ErrorMessage</div>
+    }
+
+    @if (Model.AesResult != null)
+    {
+        <div class="card mt-4 p-4 shadow-sm">
+            <h4>AES Key Generated (@Model.AesResult.KeySize-bit)</h4>
+
+            <label class="form-label mt-3">Key (Base64)</label>
+            <textarea id="aesKeyBase64" class="form-control" rows="2" readonly>@Model.AesResult.KeyBase64</textarea>
+            <div class="mt-2 d-flex gap-2 flex-wrap">
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyText('aesKeyBase64')">Copy</button>
+                <form asp-action="DownloadAesKey" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="key" value="@Model.AesResult.KeyBase64" />
+                    <button type="submit" class="btn btn-outline-primary btn-sm">Download Key</button>
+                </form>
+            </div>
+
+            <label class="form-label mt-3">Key (Hex)</label>
+            <textarea id="aesKeyHex" class="form-control" rows="2" readonly>@Model.AesResult.KeyHex</textarea>
+            <button type="button" class="btn btn-outline-secondary btn-sm mt-2" onclick="copyText('aesKeyHex')">Copy</button>
+
+            <label class="form-label mt-3">IV (Base64)</label>
+            <textarea id="aesIvBase64" class="form-control" rows="2" readonly>@Model.AesResult.IVBase64</textarea>
+            <div class="mt-2 d-flex gap-2 flex-wrap">
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyText('aesIvBase64')">Copy</button>
+                <form asp-action="DownloadAesIv" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="iv" value="@Model.AesResult.IVBase64" />
+                    <button type="submit" class="btn btn-outline-primary btn-sm">Download IV</button>
+                </form>
+            </div>
+
+            <label class="form-label mt-3">IV (Hex)</label>
+            <textarea id="aesIvHex" class="form-control" rows="2" readonly>@Model.AesResult.IVHex</textarea>
+            <button type="button" class="btn btn-outline-secondary btn-sm mt-2" onclick="copyText('aesIvHex')">Copy</button>
+
+            <form asp-action="DownloadAesCombined" method="post" class="mt-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="key" value="@Model.AesResult.KeyBase64" />
+                <input type="hidden" name="iv" value="@Model.AesResult.IVBase64" />
+                <button type="submit" class="btn btn-success btn-sm">Download Key + IV</button>
+            </form>
+        </div>
+    }
+
+    @if (Model.RsaResult != null)
+    {
+        <div class="card mt-4 p-4 shadow-sm">
+            <h4>RSA Key Pair Generated (@Model.RsaResult.KeySize-bit)</h4>
+
+            <div class="alert alert-warning">
+                <strong>Warning:</strong> Never share your private key!
+            </div>
+
+            <label class="form-label mt-3">Public Key (PEM)</label>
+            <textarea id="rsaPublicKey" class="form-control" rows="8" readonly>@Model.RsaResult.PublicKeyPem</textarea>
+            <div class="mt-2 d-flex gap-2 flex-wrap">
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyText('rsaPublicKey')">Copy</button>
+                <form asp-action="DownloadRsaPublicKey" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="publicKeyPem" value="@Model.RsaResult.PublicKeyPem" />
+                    <button type="submit" class="btn btn-outline-primary btn-sm">Download Public Key</button>
+                </form>
+            </div>
+
+            <label class="form-label mt-3">Private Key (PEM)</label>
+            <textarea id="rsaPrivateKey" class="form-control" rows="12" readonly>@Model.RsaResult.PrivateKeyPem</textarea>
+            <div class="mt-2 d-flex gap-2 flex-wrap">
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyText('rsaPrivateKey')">Copy</button>
+                <form asp-action="DownloadRsaPrivateKey" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="privateKeyPem" value="@Model.RsaResult.PrivateKeyPem" />
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Download Private Key</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const keyTypeSelect = document.getElementById("keyTypeSelect");
+        const keySizeSelect = document.getElementById("keySizeSelect");
+
+        const currentKeyType = "@Model.KeyType";
+        const currentKeySize = @Model.KeySize;
+
+        function updateKeySizes(preserveSelectedValue = true) {
+            const keyType = keyTypeSelect.value;
+            const previousValue = preserveSelectedValue
+                ? currentKeySize.toString()
+                : null;
+
+            keySizeSelect.innerHTML = "";
+
+            let options = [];
+            let defaultValue = "";
+
+            if (keyType === "AES") {
+                options = [128, 192, 256];
+                defaultValue = "256";
+            } else {
+                options = [1024, 2048, 4096];
+                defaultValue = "2048";
+            }
+
+            options.forEach(size => {
+                const option = document.createElement("option");
+                option.value = size;
+                option.text = size;
+
+                if (preserveSelectedValue && previousValue === size.toString()) {
+                    option.selected = true;
+                } else if (!preserveSelectedValue && defaultValue === size.toString()) {
+                    option.selected = true;
+                }
+
+                keySizeSelect.appendChild(option);
+            });
+        }
+
+        function copyText(id) {
+            const element = document.getElementById(id);
+            navigator.clipboard.writeText(element.value);
+        }
+
+        keyTypeSelect.addEventListener("change", function () {
+            updateKeySizes(false);
+        });
+
+        keyTypeSelect.value = currentKeyType;
+        updateKeySizes(true);
+    </script>
+}
