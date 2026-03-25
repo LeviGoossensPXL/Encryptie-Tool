@@ -5,8 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-
+builder.Services.AddScoped<IAesEncryptionService, AesEncryptionService>();
+builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IAesKeyGenerator, AesKeyGenerator>();
 builder.Services.AddScoped<IRsaKeyGenerator, RsaKeyGenerator>();
 
