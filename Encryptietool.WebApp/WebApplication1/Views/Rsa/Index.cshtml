@@ -4,7 +4,8 @@
     
         <div class="row mx-0 text-field">
             <label asp-for="@Model.InputAesKey" class="form-label">Input text</label>
-            <textarea type="text" asp-for="@Model.InputAesKey" class="form-control"></textarea>
+            <textarea type="text" asp-for="@Model.InputAesKey" class="form-control" id="inputAesKey"></textarea>
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyText('inputAesKey')">Copy</button>
         </div>
         
         <div class="row">
@@ -36,7 +37,8 @@
         
 <div class="row mx-0 text-field">
     <label asp-for="@Model.OutputAesKey" class="form-label">output text</label>
-    <textarea type="text" asp-for="@Model.OutputAesKey" class="form-control">@Model.OutputAesKey</textarea>
+    <textarea type="text" asp-for="@Model.OutputAesKey" class="form-control" id="outputAesKey">@Model.OutputAesKey</textarea>
+    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyText('outputAesKey')">Copy</button>
 </div>
 
 <script>
@@ -56,4 +58,9 @@
         reader.onload = e => document.getElementById('RsaPrivateKey').value = e.target.result.trim();
         reader.readAsText(file);
     });
+
+    function copyText(id) {
+        const element = document.getElementById(id);
+        navigator.clipboard.writeText(element.value);
+    }
 </script>
