@@ -1,0 +1,59 @@
+@model RsaViewModel
+<div>
+<form enctype="multipart/form-data">
+    
+        <div class="row mx-0 text-field">
+            <label asp-for="@Model.InputAesKey" class="form-label">Input text</label>
+            <textarea type="text" asp-for="@Model.InputAesKey" class="form-control"></textarea>
+        </div>
+        
+        <div class="row">
+            <div class="col">
+                <label asp-for="@Model.RsaPublicKey" class="form-label">Public Key</label>
+                <div class="input-group">
+                    <input asp-for="@Model.RsaPublicKey" class="form-control" type="text" value="@Model.RsaPublicKey"/>
+                    <label class="input-group-text" title="Load key from file" style="cursor:pointer">
+                        📂<input type="file" id="publicKeyFile" style="display:none">
+                    </label>
+                </div>
+            </div>
+            <div class="col">
+                <label asp-for="@Model.RsaPrivateKey" class="form-label">Private Key</label>
+                <div class="input-group">
+                    <input asp-for="@Model.RsaPrivateKey" class="form-control" type="text" value="@Model.RsaPrivateKey"/>
+                    <label class="input-group-text" title="Load private key from file" style="cursor:pointer">
+                        📂<input type="file" id="privateKeyFile" style="display:none">
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <button type="submit" asp-action="Encryption" class="btn btn-primary my-3">Encrypt Aes Key</button>
+        <button type="submit" asp-action="Decryption" class="btn btn-primary my-3">Decrypt Aes Key</button>
+        <button type="reset" class="btn btn-danger my-3">Clear</button>
+    </form>
+</div>
+        
+<div class="row mx-0 text-field">
+    <label asp-for="@Model.OutputAesKey" class="form-label">output text</label>
+    <textarea type="text" asp-for="@Model.OutputAesKey" class="form-control">@Model.OutputAesKey</textarea>
+</div>
+
+<script>
+    //read key file in
+    document.getElementById('publicKeyFile').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => document.getElementById('RsaPublicKey').value = e.target.result.trim();
+        reader.readAsText(file);
+    });
+    //read iv file in
+    document.getElementById('privateKeyFile').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => document.getElementById('RsaPrivateKey').value = e.target.result.trim();
+        reader.readAsText(file);
+    });
+</script>
