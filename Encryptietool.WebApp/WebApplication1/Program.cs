@@ -9,6 +9,7 @@ builder.Services.AddScoped<IAesEncryptionService, AesEncryptionService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IAesKeyGenerator, AesKeyGenerator>();
 builder.Services.AddScoped<IRsaKeyGenerator, RsaKeyGenerator>();
+builder.Services.AddScoped<IRsaEncryptionService, RsaEncryptionService>();
 
 
 var app = builder.Build();
