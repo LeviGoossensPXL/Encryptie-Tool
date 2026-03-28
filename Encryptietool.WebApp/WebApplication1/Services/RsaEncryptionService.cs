@@ -7,21 +7,21 @@ public class RsaEncryptionService : IRsaEncryptionService
 {
     public byte[] EncryptKey(byte[] aesKey, RSA publicKey)
     {
-        throw new NotImplementedException();
+        return publicKey.Encrypt(aesKey, RSAEncryptionPadding.OaepSHA256);
     }
 
     public byte[] DecryptKey(byte[] encryptedKey, RSA privateKey)
     {
-        throw new NotImplementedException();
+        return privateKey.Decrypt(encryptedKey, RSAEncryptionPadding.OaepSHA256);
     }
 
     public byte[] SignData(byte[] data, RSA privateKey)
     {
-        throw new NotImplementedException();
+        return privateKey.SignData(data, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
     }
 
     public bool VerifySignature(byte[] data, byte[] signature, RSA publicKey)
     {
-        throw new NotImplementedException();
+        return publicKey.VerifyData(data, signature, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
     }
 }
