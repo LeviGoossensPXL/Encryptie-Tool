@@ -43,4 +43,11 @@ public class RsaController : Controller
         
         return View("Index", rsaViewModel);
     }
+
+    [HttpGet]
+    public IActionResult DownloadOutput(string content)
+    {
+        var bytes = System.Text.Encoding.UTF8.GetBytes(content);
+        return File(bytes, "application/octet-stream", "output.txt");
+    }
 }

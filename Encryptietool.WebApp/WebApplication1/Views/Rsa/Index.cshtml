@@ -5,6 +5,9 @@
         <div class="row mx-0 text-field">
             <label asp-for="@Model.InputAesKey" class="form-label">Input text</label>
             <textarea type="text" asp-for="@Model.InputAesKey" class="form-control" id="inputAesKey"></textarea>
+            <label class="input-group-text" title="Load private key from file" style="cursor:pointer">
+                📂<input type="file" id="inputAesKeyFile" style="display:none">
+            </label>
             <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyText('inputAesKey')">Copy</button>
         </div>
         
@@ -39,10 +42,10 @@
     <label asp-for="@Model.OutputAesKey" class="form-label">output text</label>
     <textarea type="text" asp-for="@Model.OutputAesKey" class="form-control" id="outputAesKey">@Model.OutputAesKey</textarea>
     <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyText('outputAesKey')">Copy</button>
+    <a asp-action="DownloadOutput" asp-route-content="@Model.OutputAesKey" class="btn btn-success">Download File</a>
 </div>
 
 <script>
-    //read key file in
     document.getElementById('publicKeyFile').addEventListener('change', function () {
         const file = this.files[0];
         if (!file) return;
@@ -50,12 +53,20 @@
         reader.onload = e => document.getElementById('RsaPublicKey').value = e.target.result.trim();
         reader.readAsText(file);
     });
-    //read iv file in
+    
     document.getElementById('privateKeyFile').addEventListener('change', function () {
         const file = this.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = e => document.getElementById('RsaPrivateKey').value = e.target.result.trim();
+        reader.readAsText(file);
+    });
+    
+    document.getElementById('inputAesKeyFile').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => document.getElementById('inputAesKey').value = e.target.result.trim();
         reader.readAsText(file);
     });
 
