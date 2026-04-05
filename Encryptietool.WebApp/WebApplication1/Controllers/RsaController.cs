@@ -24,6 +24,8 @@ public class RsaController : Controller
     [HttpPost]
     public IActionResult Encryption(RsaViewModel rsaViewModel)
     {
+        if (!ModelState.IsValid) return View("Index", rsaViewModel);
+        
         var rsa = RSA.Create();
         rsa.ImportFromPem(rsaViewModel.RsaPublicKey);
         
@@ -37,6 +39,8 @@ public class RsaController : Controller
     [HttpPost]
     public IActionResult Decryption(RsaViewModel rsaViewModel)
     {
+        if (!ModelState.IsValid) return View("Index", rsaViewModel);
+        
         var rsa = RSA.Create();
         rsa.ImportFromPem(rsaViewModel.RsaPrivateKey);
         

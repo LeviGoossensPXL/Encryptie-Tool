@@ -31,6 +31,8 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> Encryption(AesEncryptionViewModel aesEncryptionViewModel)
         {
+            if (!ModelState.IsValid) return View(aesEncryptionViewModel);
+            
             var cipherMode = Enum.Parse<CipherMode>(aesEncryptionViewModel.CipherMode);
             var paddingMode = Enum.Parse<PaddingMode>(aesEncryptionViewModel.PaddingMode);
             AesEncryptionResult aesEncryptionResult;
@@ -63,6 +65,8 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> Decryption(AesDecryptionViewModel aesDecryptionViewModel)
         {
+            if (!ModelState.IsValid) return View(aesDecryptionViewModel);
+            
             var cipherMode = Enum.Parse<CipherMode>(aesDecryptionViewModel.CipherMode);
             var paddingMode = Enum.Parse<PaddingMode>(aesDecryptionViewModel.PaddingMode);
             AesDecryptionResult aesDecryptionResult;
