@@ -1,18 +1,69 @@
 using System.Security.Cryptography;
+using WebApplication1.Models.Results;
 using WebApplication1.Services.Interfaces;
 
 namespace WebApplication1.Services;
 
 public class RsaEncryptionService : IRsaEncryptionService
 {
-    public byte[] EncryptKey(byte[] aesKey, RSA publicKey)
+    public RsaEncryptionResult EncryptKey(string input, string publicKey)
     {
-        return publicKey.Encrypt(aesKey, RSAEncryptionPadding.OaepSHA256);
+        var result = new RsaEncryptionResult();
+        using var rsa = RSA.Create();
+        try
+        {
+            rsa.ImportFromPem(publicKey);
+        }
+        catch (ArgumentException)
+        {
+            result.Failed("Invalid PEM key.");
+            return result;
+        }
+        
+        byte[] inputBytes;
+        try
+        {
+            inputBytes = Convert.FromBase64String(input);
+        }
+        catch (Exception)
+        {
+            result.Failed("Invalid input format. Expected base64 string");
+            return result;
+        }
+
+        var cipher = rsa.Encrypt(inputBytes, RSAEncryptionPadding.OaepSHA256);
+        result.CipherText = Convert.ToBase64String(cipher);
+        return result;
     }
 
-    public byte[] DecryptKey(byte[] encryptedKey, RSA privateKey)
+    public RsaDecryptionResult DecryptKey(string input, string privateKey)
     {
-        return privateKey.Decrypt(encryptedKey, RSAEncryptionPadding.OaepSHA256);
+        var result = new RsaDecryptionResult();
+        using var rsa = RSA.Create();
+        try
+        {
+            rsa.ImportFromPem(privateKey);
+        }
+        catch (Exception)
+        {
+            result.Failed("Invalid PEM key.");
+            return result;
+        }
+
+        byte[] inputBytes;
+        try
+        {
+             inputBytes = Convert.FromBase64String(input);
+        }
+        catch (Exception)
+        {
+            result.Failed("Invalid input format. Expected base64 string");
+            return result;
+        }
+        
+        var cipher = rsa.Decrypt(inputBytes, RSAEncryptionPadding.OaepSHA256);
+        result.PlainText = Convert.ToBase64String(cipher);
+        return result;
     }
 
     public byte[] SignData(byte[] data, RSA privateKey)

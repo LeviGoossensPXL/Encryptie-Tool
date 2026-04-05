@@ -14,32 +14,31 @@ public class RsaController : Controller
     {
         _rsaEncryptionService = rsaEncryptionService;
     }
-
+    
+    [HttpGet]
     public IActionResult Index()
     {
         return View(new RsaViewModel());
     }
     
+    [HttpPost]
     public IActionResult Encryption(RsaViewModel rsaViewModel)
     {
-        var rsa = RSA.Create();
-        rsa.ImportFromPem(rsaViewModel.RsaPublicKey);
+        if (!ModelState.IsValid) return View("Index", rsaViewModel);
         
-        var l1 = Convert.FromBase64String(rsaViewModel.InputAesKey);
-        var result = _rsaEncryptionService.EncryptKey(l1, rsa);
-        rsaViewModel.OutputAesKey = Convert.ToBase64String(result);
+        var result = _rsaEncryptionService.EncryptKey(rsaViewModel.InputAesKey, rsaViewModel.RsaPublicKey);
+        rsaViewModel.OutputAesKey = result.CipherText;
         
         return View("Index", rsaViewModel);
     }
     
+    [HttpPost]
     public IActionResult Decryption(RsaViewModel rsaViewModel)
     {
-        var rsa = RSA.Create();
-        rsa.ImportFromPem(rsaViewModel.RsaPrivateKey);
+        if (!ModelState.IsValid) return View("Index", rsaViewModel);
         
-        var l1 = Convert.FromBase64String(rsaViewModel.InputAesKey);
-        var result = _rsaEncryptionService.DecryptKey(l1, rsa);
-        rsaViewModel.OutputAesKey = Convert.ToBase64String(result);
+        var result = _rsaEncryptionService.DecryptKey(rsaViewModel.InputAesKey, rsaViewModel.RsaPrivateKey);
+        rsaViewModel.OutputAesKey = result.PlainText;
         
         return View("Index", rsaViewModel);
     }
