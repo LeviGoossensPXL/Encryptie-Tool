@@ -45,42 +45,38 @@ namespace WebApplication1.Services
 
         public AesEncryptionResult EncryptFile(FileInfo file, string key, string iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
-            var result = new AesEncryptionResult();
-            
             using Aes aes = ConfigureAes(key, iv, cipherMode, paddingMode);
             
             using ICryptoTransform encryptor = aes.CreateEncryptor();
 
             using FileStream inFs = new(file.FullName, FileMode.Open);
-            
             using CryptoStream cryptoStream = new(inFs, encryptor, CryptoStreamMode.Read);
-
             using FileStream outFs = new(Path.Combine(file.DirectoryName, $"{file.Name}.encrypted"), FileMode.Create);
             
             cryptoStream.CopyTo(outFs);
-            
-            result.FileInfo = new FileInfo(outFs.Name);
+            var result = new AesEncryptionResult
+            {
+                FileInfo = new FileInfo(outFs.Name)
+            };
 
             return result;
         }
 
         public AesDecryptionResult DecryptFile(FileInfo file, string key, string iv, CipherMode cipherMode, PaddingMode paddingMode)
         {
-            var result = new AesDecryptionResult();
-            
             using Aes aes = ConfigureAes(key, iv, cipherMode, paddingMode);
             
             using ICryptoTransform decryptor = aes.CreateDecryptor();
 
             using FileStream inFs = new(file.FullName, FileMode.Open);
-
             using CryptoStream cryptoStream = new(inFs, decryptor, CryptoStreamMode.Read);
-
             using FileStream outFs = new(Path.Combine(file.DirectoryName, $"{file.Name}.decrypted"), FileMode.Create);
 
             cryptoStream.CopyTo(outFs);
-            
-            result.FileInfo = new FileInfo(outFs.Name);
+            var result = new AesDecryptionResult
+            {
+                FileInfo = new FileInfo(outFs.Name)
+            };
 
             return result;
         }
