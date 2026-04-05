@@ -118,3 +118,7 @@ WebApplication1/
     ├── Hashing/
     └── KeyGeneration/
 ```
+## taakverdeling
+niel: part4, part1
+levi: part2, part3
+roos: part5 (technische problemen)
