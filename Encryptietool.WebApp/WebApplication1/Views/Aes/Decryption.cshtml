@@ -1,45 +1,72 @@
 ﻿@model AesDecryptionViewModel
+
 <div>
-<form asp-action="Decryption" enctype="multipart/form-data">
-        
-    <div class="form-check">
-        <input type="checkbox" asp-for="IsFileUpload" class="form-check-input">                                                                                                                                                                                                                                                                                                                                                        
-        <label asp-for="IsFileUpload" class="form-check-label">File?</label> 
+
+    <div class="alert alert-info">
+        <strong>AES Decryption</strong><br />
+        AES is een symmetrisch encryptie algoritme. Gebruik dezelfde key en IV als bij encryptie.
+        Deel je key nooit met anderen.
     </div>
-    
+
+    <form asp-action="Decryption" enctype="multipart/form-data">
+
+        <div class="form-check">
+            <input type="checkbox" asp-for="IsFileUpload" class="form-check-input">
+            <label asp-for="IsFileUpload" class="form-check-label">File?</label>
+        </div>
+
         <div class="row mx-0 text-field">
-            <label asp-for="@Model.InputText" class="form-label">input text</label>
-            <textarea type="text" asp-for="@Model.InputText" class="form-control"></textarea>
+            <label asp-for="@Model.InputText" class="form-label">
+                input text
+            </label>
+            <textarea asp-for="@Model.InputText" class="form-control" required></textarea>
         </div>
-        
+
         <div class="row mx-0 file-field">
-            <label asp-for="@Model.InputFile" class="form-label">input file</label>
-            <input type="file" asp-for="@Model.InputFile" class="form-control"></input>
+            <label asp-for="@Model.InputFile" class="form-label">
+                input file
+            </label>
+            <input type="file" asp-for="@Model.InputFile" class="form-control">
         </div>
-        
+
         <div class="row">
             <div class="col">
-                <label asp-for="@Model.Key" class="form-label">key</label>
+                <label asp-for="@Model.Key" class="form-label">
+                    key
+                    <span data-bs-toggle="tooltip" title="Dezelfde key als gebruikt bij encryptie">
+                        
+                    </span>
+                </label>
                 <div class="input-group">
-                    <input asp-for="@Model.Key" class="form-control" type="text" value="@Model.Key"/>
+                    <input asp-for="@Model.Key" class="form-control" type="text" required />
                     <label class="input-group-text" title="Load key from file" style="cursor:pointer">
-                        📂<input type="file" id="decKeyFile" style="display:none">
+                        <input type="file" id="decKeyFile" style="display:none">
+                    </label>
+                </div>
+                <small class="text-danger">Never share your private key</small>
+            </div>
+
+            <div class="col">
+                <label asp-for="@Model.IV" class="form-label">
+                    IV
+                    <span data-bs-toggle="tooltip" title="Initialization Vector voor AES">
+                        
+                    </span>
+                </label>
+                <div class="input-group">
+                    <input asp-for="@Model.IV" class="form-control" type="text" required />
+                    <label class="input-group-text" title="Load iv from file" style="cursor:pointer">
+                        <input type="file" id="ivFile" style="display:none">
                     </label>
                 </div>
             </div>
-            <div class="col">
-                <label asp-for="@Model.IV" class="form-label">IV</label>
-                <div class="input-group">
-                    <input asp-for="@Model.IV" class="form-control" type="text" value="@Model.IV"/>
-                    <label class="input-group-text" title="Load iv from file" style="cursor:pointer">
-                        📂<input type="file" id="ivFile" style="display:none">
-                    </label>
-                </div>
-            </div>i
         </div>
+
         <div class="row">
             <div class="col">
-                <label asp-for="@Model.CipherMode" class="form-label">cipher mode</label>
+                <label asp-for="@Model.CipherMode" class="form-label">
+                    cipher mode
+                </label>
                 <select asp-for="@Model.CipherMode" class="form-select">
                     <option>CBC</option>
                     <option>ECB</option>
@@ -47,7 +74,9 @@
                 </select>
             </div>
             <div class="col">
-                <label asp-for="@Model.PaddingMode" class="form-label">padding mode</label>
+                <label asp-for="@Model.PaddingMode" class="form-label">
+                    padding mode
+                </label>
                 <select asp-for="@Model.PaddingMode" class="form-select">
                     <option>PKCS7</option>
                     <option>Zeros</option>
@@ -55,22 +84,30 @@
                 </select>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary my-3">Apply Decryption</button>
-        <button type="reset" class="btn btn-danger my-3">Clear</button>
+
+        <button type="submit" class="btn btn-primary my-3">
+            Apply Decryption
+        </button>
+        <button type="reset" class="btn btn-danger my-3">
+            Clear
+        </button>
+
     </form>
-    
+
     <div class="row mx-0 text-field">
-        <label asp-for="@Model.OutputText" class="form-label">input text</label>
-        <textarea type="text" asp-for="@Model.OutputText" class="form-control" disabled></textarea>
+        <label asp-for="@Model.OutputText" class="form-label">output text</label>
+        <textarea asp-for="@Model.OutputText" class="form-control" disabled></textarea>
     </div>
+
     <div class="row mx-0 file-field">
         <label asp-for="@Model.OutputFile" class="form-label">output file</label>
-        <a asp-action="Download" asp-route-filename="@Model.OutputFile" class="btn btn-success">Download</a>
+        <a asp-action="Download" asp-route-filename="@Model.OutputFile" class="btn btn-success">
+            Download
+        </a>
     </div>
 </div>
 
 <script>
-    //read key file in
     document.getElementById('decKeyFile').addEventListener('change', function () {
         const file = this.files[0];
         if (!file) return;
@@ -78,7 +115,7 @@
         reader.onload = e => document.getElementById('Key').value = e.target.result.trim();
         reader.readAsText(file);
     });
-    //read iv file in
+
     document.getElementById('ivFile').addEventListener('change', function () {
         const file = this.files[0];
         if (!file) return;

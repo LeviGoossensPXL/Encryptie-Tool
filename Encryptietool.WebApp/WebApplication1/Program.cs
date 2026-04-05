@@ -11,6 +11,7 @@ builder.Services.AddScoped<IAesKeyGenerator, AesKeyGenerator>();
 builder.Services.AddScoped<IRsaKeyGenerator, RsaKeyGenerator>();
 builder.Services.AddScoped<IRsaEncryptionService, RsaEncryptionService>();
 
+builder.Services.AddScoped<IHashingService, HashingService>();
 
 var app = builder.Build();
 

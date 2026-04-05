@@ -1,0 +1,291 @@
+﻿@model WebApplication1.Models.HashingViewModel
+
+@{
+    ViewData["Title"] = "Hashing & Integrity Verification";
+}
+
+<div class="container mt-4">
+    <h2>Hashing & Integrity Verification</h2>
+    <p class="text-muted">
+        Generate and verify hashes for text or files. You can also generate and verify HMAC values with a secret key.
+    </p>
+
+    <div class="alert alert-info">
+        <strong>Info:</strong> SHA256 is recommended for general integrity verification.
+    </div>
+
+    <div class="alert alert-warning">
+        MD5 en SHA1 zijn verouderd. Gebruik SHA256 of hoger voor echte beveiliging.
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.WarningMessage))
+    {
+        <div class="alert alert-warning">
+            <strong>Warning:</strong> @Model.WarningMessage
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <div class="row g-4">
+        <div class="col-12 col-lg-7">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">Hash Generation</h4>
+
+                    <form asp-action="GenerateHash" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label class="form-label d-block">Input Type</label>
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="IsFileUpload"
+                                       id="hashInputText"
+                                       value="false"
+                                       @(Model.IsFileUpload ? "" : "checked") />
+                                <label class="form-check-label" for="hashInputText">Text</label>
+                            </div>
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="IsFileUpload"
+                                       id="hashInputFile"
+                                       value="true"
+                                       @(Model.IsFileUpload ? "checked" : "") />
+                                <label class="form-check-label" for="hashInputFile">File</label>
+                            </div>
+                        </div>
+
+                        <div id="hashTextSection" class="mb-3">
+                            <label asp-for="InputText" class="form-label">Input Text</label>
+                            <textarea asp-for="InputText" class="form-control" rows="6" placeholder="Enter text to hash..."></textarea>
+                        </div>
+
+                        <div id="hashFileSection" class="mb-3">
+                            <label asp-for="InputFile" class="form-label">Upload File</label>
+                            <input asp-for="InputFile" class="form-control" type="file" />
+                            <div class="form-text">Use this for file integrity checking.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="HashAlgorithm" class="form-label">
+                                Hash Algorithm
+                                <span data-bs-toggle="tooltip"
+                                      title="SHA256 aanbevolen. MD5 en SHA1 enkel voor learning.">
+                                    
+                                </span>
+                            </label>
+                            <select asp-for="HashAlgorithm" class="form-select">
+                                <option value="MD5">MD5</option>
+                                <option value="SHA1">SHA1</option>
+                                <option value="SHA256">SHA256</option>
+                                <option value="SHA384">SHA384</option>
+                                <option value="SHA512">SHA512</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button type="submit" class="btn btn-primary">Generate Hash</button>
+                            <button type="submit" asp-action="VerifyHash" class="btn btn-outline-success">Verify Hash</button>
+                            <button type="reset" class="btn btn-outline-danger">Clear</button>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="mb-3">
+                            <label asp-for="GeneratedHash" class="form-label">Generated Hash (Hex)</label>
+                            <textarea asp-for="GeneratedHash" id="generatedHash" class="form-control" rows="4" readonly></textarea>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap mb-3">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyText('generatedHash')">Copy Hash</button>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ExpectedHash" class="form-label">Expected Hash</label>
+                            <textarea asp-for="ExpectedHash" class="form-control" rows="3" placeholder="Paste the expected hash here..."></textarea>
+                        </div>
+
+                        @if (Model.VerificationSucceeded.HasValue)
+                        {
+                            if (Model.VerificationSucceeded.Value)
+                            {
+                                <div class="alert alert-success mb-0">
+                                    Hash verification succeeded. The data matches the expected hash.
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-danger mb-0">
+                                    Hash verification failed. The data does not match the expected hash.
+                                </div>
+                            }
+                        }
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-5">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">HMAC</h4>
+                    <p class="text-muted">
+                        HMAC provides integrity and authenticity using a secret key.
+                    </p>
+
+                    <form asp-action="GenerateHmac" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label class="form-label d-block">Input Type</label>
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="IsHmacFileUpload"
+                                       id="hmacInputText"
+                                       value="false"
+                                       @(Model.IsHmacFileUpload ? "" : "checked") />
+                                <label class="form-check-label" for="hmacInputText">Text</label>
+                            </div>
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="IsHmacFileUpload"
+                                       id="hmacInputFile"
+                                       value="true"
+                                       @(Model.IsHmacFileUpload ? "checked" : "") />
+                                <label class="form-check-label" for="hmacInputFile">File</label>
+                            </div>
+                        </div>
+
+                        <div id="hmacTextSection" class="mb-3">
+                            <label asp-for="HmacInputText" class="form-label">Input Text</label>
+                            <textarea asp-for="HmacInputText" class="form-control" rows="5" placeholder="Enter text for HMAC..."></textarea>
+                        </div>
+
+                        <div id="hmacFileSection" class="mb-3">
+                            <label asp-for="HmacInputFile" class="form-label">Upload File</label>
+                            <input asp-for="HmacInputFile" class="form-control" type="file" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="HmacSecretKey" class="form-label">Secret Key</label>
+                            <input asp-for="HmacSecretKey" class="form-control" type="text" placeholder="Enter secret key..." />
+                            <small class="text-danger">
+                                Never share this secret key
+                            </small>
+                            <div class="form-text">Keep this key secret. HMAC verification only works with the same key.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="HmacAlgorithm" class="form-label">HMAC Algorithm</label>
+                            <select asp-for="HmacAlgorithm" class="form-select">
+                                <option value="HMACSHA256">HMACSHA256</option>
+                                <option value="HMACSHA384">HMACSHA384</option>
+                                <option value="HMACSHA512">HMACSHA512</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button type="submit" class="btn btn-primary">Generate HMAC</button>
+                            <button type="submit" asp-action="VerifyHmac" class="btn btn-outline-success">Verify HMAC</button>
+                            <button type="reset" class="btn btn-outline-danger">Clear</button>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="mb-3">
+                            <label asp-for="GeneratedHmac" class="form-label">Generated HMAC (Hex)</label>
+                            <textarea asp-for="GeneratedHmac" id="generatedHmac" class="form-control" rows="4" readonly></textarea>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap mb-3">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyText('generatedHmac')">Copy HMAC</button>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ExpectedHmac" class="form-label">Expected HMAC</label>
+                            <textarea asp-for="ExpectedHmac" class="form-control" rows="3" placeholder="Paste the expected HMAC here..."></textarea>
+                        </div>
+
+                        @if (Model.HmacVerificationSucceeded.HasValue)
+                        {
+                            if (Model.HmacVerificationSucceeded.Value)
+                            {
+                                <div class="alert alert-success mb-0">
+                                    HMAC verification succeeded. The data and secret key match.
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-danger mb-0">
+                                    HMAC verification failed. The data or secret key does not match.
+                                </div>
+                            }
+                        }
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+            <h5 class="card-title">What is this used for?</h5>
+            <ul class="mb-0">
+                <li><strong>Hashing:</strong> checks whether text or a file has changed.</li>
+                <li><strong>HMAC:</strong> checks integrity and also proves the sender knew the secret key.</li>
+                <li><strong>SHA256:</strong> best default choice for this assignment.</li>
+                <li><strong>MD5 / SHA1:</strong> included for learning, not recommended for modern security use.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function copyText(id) {
+            const element = document.getElementById(id);
+            if (!element || !element.value) return;
+
+            navigator.clipboard.writeText(element.value);
+        }
+
+        function toggleHashInputSections() {
+            const isFileSelected = document.getElementById("hashInputFile").checked;
+            document.getElementById("hashTextSection").style.display = isFileSelected ? "none" : "block";
+            document.getElementById("hashFileSection").style.display = isFileSelected ? "block" : "none";
+        }
+
+        function toggleHmacInputSections() {
+            const isFileSelected = document.getElementById("hmacInputFile").checked;
+            document.getElementById("hmacTextSection").style.display = isFileSelected ? "none" : "block";
+            document.getElementById("hmacFileSection").style.display = isFileSelected ? "block" : "none";
+        }
+
+        document.getElementById("hashInputText").addEventListener("change", toggleHashInputSections);
+        document.getElementById("hashInputFile").addEventListener("change", toggleHashInputSections);
+
+        document.getElementById("hmacInputText").addEventListener("change", toggleHmacInputSections);
+        document.getElementById("hmacInputFile").addEventListener("change", toggleHmacInputSections);
+
+        toggleHashInputSections();
+        toggleHmacInputSections();
+    </script>
+}

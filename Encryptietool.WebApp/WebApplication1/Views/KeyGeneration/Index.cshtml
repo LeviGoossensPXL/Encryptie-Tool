@@ -7,13 +7,24 @@
 <div class="container mt-4">
     <h2>Key Generation</h2>
     <p class="text-muted">Generate AES or RSA keys for the encryption tool.</p>
+    <div class="alert alert-info">
+        <strong>Info:</strong>
+        AES gebruikt een symmetrische sleutel (zelfde key voor encryptie en decryptie).
+        RSA gebruikt een key pair (public key om te encrypten, private key om te decrypten).
+    </div>
 
     <form asp-action="Index" method="post" class="card p-4 shadow-sm">
         @Html.AntiForgeryToken()
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
         <div class="mb-3">
-            <label asp-for="KeyType" class="form-label">Key Type</label>
+            <label asp-for="KeyType" class="form-label">
+                Key Type
+                <span data-bs-toggle="tooltip"
+                      title="AES = symmetrisch, RSA = public/private key pair">
+                    
+                </span>
+            </label>
             <select asp-for="KeyType" class="form-select" id="keyTypeSelect">
                 <option value="AES">AES</option>
                 <option value="RSA">RSA</option>
@@ -36,6 +47,9 @@
     @if (Model.AesResult != null)
     {
         <div class="card mt-4 p-4 shadow-sm">
+            <div class="alert alert-warning">
+                Bewaar deze sleutel veilig. Iedereen met deze key kan je data decrypten.
+            </div>
             <h4>AES Key Generated (@Model.AesResult.KeySize-bit)</h4>
 
             <label class="form-label mt-3">Key (Base64)</label>
