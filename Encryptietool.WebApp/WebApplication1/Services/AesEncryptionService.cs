@@ -20,7 +20,7 @@ namespace WebApplication1.Services
             cryptoStream.FlushFinalBlock();
             AesEncryptionResult result = new()
             {
-                EncryptedText = Convert.ToBase64String(memoryStream.ToArray())
+                CipherText = Convert.ToBase64String(memoryStream.ToArray())
             };
 
             return result;
@@ -37,7 +37,7 @@ namespace WebApplication1.Services
             using StreamReader streamReader = new(cryptoStream);
             AesDecryptionResult result = new()
             {
-                DecryptedText = streamReader.ReadToEnd()
+                PlainText = streamReader.ReadToEnd()
             };
             
             return result;

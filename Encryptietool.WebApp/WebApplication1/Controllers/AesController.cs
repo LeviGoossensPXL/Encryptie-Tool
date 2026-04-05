@@ -50,7 +50,7 @@ namespace WebApplication1.Controllers
 
             aesEncryptionResult = _aesEncryptionService.Encrypt(aesEncryptionViewModel.InputText,
                 aesEncryptionViewModel.Key, aesEncryptionViewModel.IV, cipherMode, paddingMode);
-            aesEncryptionViewModel.OutputText = aesEncryptionResult.EncryptedText;
+            aesEncryptionViewModel.OutputText = aesEncryptionResult.CipherText;
 
             return View(aesEncryptionViewModel);
         }
@@ -82,7 +82,7 @@ namespace WebApplication1.Controllers
 
             aesDecryptionResult = _aesEncryptionService.Decrypt(aesDecryptionViewModel.InputText,
                 aesDecryptionViewModel.Key, aesDecryptionViewModel.IV, cipherMode, paddingMode);
-            aesDecryptionViewModel.OutputText = aesDecryptionResult.DecryptedText;
+            aesDecryptionViewModel.OutputText = aesDecryptionResult.PlainText;
 
             return View(aesDecryptionViewModel);
         }

@@ -2,7 +2,7 @@
 {
     public class AesEncryptionResult
     {
-        public string EncryptedText { get; set; }
+        public string CipherText { get; set; }
         public FileInfo FileInfo { get; set; }
     }
 }
