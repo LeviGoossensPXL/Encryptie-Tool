@@ -58,9 +58,6 @@ namespace WebApplication1.Services
             using FileStream outFs = new(Path.Combine(file.DirectoryName, $"{file.Name}.encrypted"), FileMode.Create);
             
             cryptoStream.CopyTo(outFs);
-
-            inFs.Close();
-            outFs.Close();
             
             result.FileInfo = new FileInfo(outFs.Name);
 
@@ -82,9 +79,6 @@ namespace WebApplication1.Services
             using FileStream outFs = new(Path.Combine(file.DirectoryName, $"{file.Name}.decrypted"), FileMode.Create);
 
             cryptoStream.CopyTo(outFs);
-
-            inFs.Close();
-            outFs.Close();
             
             result.FileInfo = new FileInfo(outFs.Name);
 
