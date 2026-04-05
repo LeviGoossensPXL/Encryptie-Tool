@@ -23,22 +23,9 @@ namespace WebApplication1.Controllers
             _fileService = fileService;
         }
 
-        // public IActionResult Index()
-        // {
-        //     return View();
-        // }
-
         public IActionResult Encryption()
         {
-            // Aes aes = Aes.Create();
-            // var aesEncryptionViewModel = new AesEncryptionViewModel
-            // {
-            //     InputText = "Hello World! ;-)",
-            //     Key = Convert.ToBase64String(aes.Key),
-            //     IV = Convert.ToBase64String(aes.IV)
-            // };
-            var aesEncryptionViewModel = new AesEncryptionViewModel();
-            return View(aesEncryptionViewModel);
+            return View(new AesEncryptionViewModel());
         }
 
         [HttpPost]
