@@ -14,6 +14,10 @@
         <strong>Info:</strong> SHA256 is recommended for general integrity verification.
     </div>
 
+    <div class="alert alert-warning">
+        MD5 en SHA1 zijn verouderd. Gebruik SHA256 of hoger voor echte beveiliging.
+    </div>
+
     @if (!string.IsNullOrWhiteSpace(Model.WarningMessage))
     {
         <div class="alert alert-warning">
@@ -75,7 +79,13 @@
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="HashAlgorithm" class="form-label">Hash Algorithm</label>
+                            <label asp-for="HashAlgorithm" class="form-label">
+                                Hash Algorithm
+                                <span data-bs-toggle="tooltip"
+                                      title="SHA256 aanbevolen. MD5 en SHA1 enkel voor learning.">
+                                    
+                                </span>
+                            </label>
                             <select asp-for="HashAlgorithm" class="form-select">
                                 <option value="MD5">MD5</option>
                                 <option value="SHA1">SHA1</option>
@@ -175,6 +185,9 @@
                         <div class="mb-3">
                             <label asp-for="HmacSecretKey" class="form-label">Secret Key</label>
                             <input asp-for="HmacSecretKey" class="form-control" type="text" placeholder="Enter secret key..." />
+                            <small class="text-danger">
+                                Never share this secret key
+                            </small>
                             <div class="form-text">Keep this key secret. HMAC verification only works with the same key.</div>
                         </div>
 
