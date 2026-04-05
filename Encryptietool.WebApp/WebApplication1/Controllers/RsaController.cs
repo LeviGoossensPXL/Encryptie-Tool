@@ -14,12 +14,14 @@ public class RsaController : Controller
     {
         _rsaEncryptionService = rsaEncryptionService;
     }
-
+    
+    [HttpGet]
     public IActionResult Index()
     {
         return View(new RsaViewModel());
     }
     
+    [HttpPost]
     public IActionResult Encryption(RsaViewModel rsaViewModel)
     {
         var rsa = RSA.Create();
@@ -32,6 +34,7 @@ public class RsaController : Controller
         return View("Index", rsaViewModel);
     }
     
+    [HttpPost]
     public IActionResult Decryption(RsaViewModel rsaViewModel)
     {
         var rsa = RSA.Create();
