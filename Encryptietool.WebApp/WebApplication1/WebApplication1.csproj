@@ -17,7 +17,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="Repositories\Interfaces\" />
     <Folder Include="wwwroot\Files\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Home\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Home\Privacy.cshtml" />
   </ItemGroup>
 
 </Project>

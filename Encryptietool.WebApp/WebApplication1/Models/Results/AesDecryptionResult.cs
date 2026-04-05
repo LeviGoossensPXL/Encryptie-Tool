@@ -1,8 +1,8 @@
 ﻿namespace WebApplication1.Models.Results
 {
-    public class AesDecryptionResult
+    public class AesDecryptionResult : BaseResult
     {
-        public string DecryptedText { get; set; }
+        public string PlainText { get; set; }
         public FileInfo FileInfo { get; set; }
     }
 }
