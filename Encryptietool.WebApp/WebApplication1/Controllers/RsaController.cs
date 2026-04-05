@@ -26,12 +26,8 @@ public class RsaController : Controller
     {
         if (!ModelState.IsValid) return View("Index", rsaViewModel);
         
-        var rsa = RSA.Create();
-        rsa.ImportFromPem(rsaViewModel.RsaPublicKey);
-        
-        var l1 = Convert.FromBase64String(rsaViewModel.InputAesKey);
-        var result = _rsaEncryptionService.EncryptKey(l1, rsa);
-        rsaViewModel.OutputAesKey = Convert.ToBase64String(result);
+        var result = _rsaEncryptionService.EncryptKey(rsaViewModel.InputAesKey, rsaViewModel.RsaPublicKey);
+        rsaViewModel.OutputAesKey = result.CipherText;
         
         return View("Index", rsaViewModel);
     }
@@ -41,12 +37,8 @@ public class RsaController : Controller
     {
         if (!ModelState.IsValid) return View("Index", rsaViewModel);
         
-        var rsa = RSA.Create();
-        rsa.ImportFromPem(rsaViewModel.RsaPrivateKey);
-        
-        var l1 = Convert.FromBase64String(rsaViewModel.InputAesKey);
-        var result = _rsaEncryptionService.DecryptKey(l1, rsa);
-        rsaViewModel.OutputAesKey = Convert.ToBase64String(result);
+        var result = _rsaEncryptionService.DecryptKey(rsaViewModel.InputAesKey, rsaViewModel.RsaPrivateKey);
+        rsaViewModel.OutputAesKey = result.PlainText;
         
         return View("Index", rsaViewModel);
     }
