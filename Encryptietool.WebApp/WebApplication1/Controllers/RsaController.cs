@@ -20,8 +20,7 @@ public class RsaController : Controller
     {
         return View(new RsaViewModel());
     }
-    
-    [HttpPost]
+
     public IActionResult Encryption(RsaViewModel rsaViewModel)
     {
         if (!ModelState.IsValid) return View("Index", rsaViewModel);
@@ -31,8 +30,7 @@ public class RsaController : Controller
         
         return View("Index", rsaViewModel);
     }
-    
-    [HttpPost]
+
     public IActionResult Decryption(RsaViewModel rsaViewModel)
     {
         if (!ModelState.IsValid) return View("Index", rsaViewModel);
